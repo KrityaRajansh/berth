@@ -34,10 +34,15 @@ export async function call<T>(
   const { data, error, response } = result;
   if (!response.ok || error !== undefined) {
     const body = (error ?? {}) as ErrorBody;
+    // A 5xx without our JSON error body means the API itself is down or unreachable.
+    const fallback =
+      response.status >= 500
+        ? "The server is not responding right now. Please try again in a moment."
+        : "Something went wrong. Please try again.";
     throw new ApiError(
       response.status,
       body.error?.code ?? "UNKNOWN",
-      body.error?.message ?? "Something went wrong. Please try again.",
+      body.error?.message ?? fallback,
       body.error?.details ?? [],
     );
   }

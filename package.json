@@ -3,9 +3,13 @@
   "private": true,
   "packageManager": "pnpm@12.15.0",
   "scripts": {
+    "dev": "pnpm run --parallel \"/^dev:(api|web)$/\"",
+    "dev:api": "cd apps/api && uv run uvicorn app.main:app --reload --port 8000",
     "dev:web": "pnpm --filter @berth/web dev",
     "build:web": "pnpm --filter @berth/web build",
+    "test:api": "cd apps/api && uv run pytest",
     "test:web": "pnpm --filter @berth/web test",
+    "test:e2e": "pnpm --filter @berth/e2e test",
     "lint:web": "pnpm --filter @berth/web lint"
   }
 }

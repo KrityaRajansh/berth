@@ -24,7 +24,7 @@ export function StationPicker({ label, value, onChange, error }: Props) {
   const [active, setActive] = useState(0);
   const query = useDebounced(text.trim(), 200);
 
-  const { data: suggestions = [] } = useQuery({
+  const { data: suggestions = [], isError: lookupFailed } = useQuery({
     queryKey: ["stations", query],
     queryFn: () => call(api.GET("/api/v1/stations", { params: { query: { q: query } } })),
     enabled: open && query.length >= 1,
@@ -109,7 +109,15 @@ export function StationPicker({ label, value, onChange, error }: Props) {
           ))}
         </ul>
       )}
-      {error && <p className="mt-1 text-xs text-red-700">{error}</p>}
+      {error ? (
+        <p className="mt-1 text-xs text-red-700">{error}</p>
+      ) : (
+        lookupFailed && (
+          <p className="mt-1 text-xs text-red-700">
+            Could not load stations. The server may be unavailable.
+          </p>
+        )
+      )}
     </div>
   );
 }
