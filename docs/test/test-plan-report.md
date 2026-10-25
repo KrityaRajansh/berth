@@ -81,7 +81,7 @@ The automated tests use a small fixed dataset so that expected values can be cal
 | Route | STA (seq 1, dep 06:00, 0 km) → STB (seq 2, 100 km) → STC (seq 3, 250 km) → STD (seq 4, arr 20:00, 400 km), all on day 0 |
 | Coaches | `S1` (SL), `B1` (3A), `A1` (2A), `H1` (1A); capacity tests override a coach to 2 berths |
 | Long-distance train | `90002` Long Haul Mail, STA → STD, 1400 km, 3A only, used for refund tests |
-| Users | `passenger1@test.local`, `passenger2@test.local` (PASSENGER), `admin@test.local` (ADMIN) |
+| Users | `passenger1@example.com`, `passenger2@example.com` (PASSENGER), `admin@example.com` (ADMIN) |
 | Payment | Approve: card `4111 1111 1111 1111`, UPI `success@berth`. Decline: card `4000 0000 0000 0002`, UPI `failure@berth` |
 
 System and acceptance tests on the deployed site use the seed dataset of real station names and invented trains loaded by `scripts/seed`.

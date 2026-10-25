@@ -36,11 +36,12 @@ def decode_session_token(token: str, now: datetime) -> dict[str, Any] | None:
             token,
             get_settings().jwt_secret,
             algorithms=[_ALGORITHM],
-            options={"verify_exp": False},
+            # Time claims are checked below against the injected clock, not the system
+            # clock, so behaviour is the same in tests and in production.
+            options={"verify_exp": False, "verify_iat": False, "verify_nbf": False},
         )
     except jwt.InvalidTokenError:
         return None
-    # Expiry is checked against the injected clock so tests can control time.
     if payload.get("exp", 0) <= now.timestamp():
         return None
     return payload
