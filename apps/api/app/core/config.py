@@ -1,6 +1,7 @@
 from functools import lru_cache
 from typing import Literal
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -11,6 +12,15 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://berth:berth@localhost:5432/berth"
     jwt_secret: str = "dev-only-secret"
     cron_secret: str = ""
+
+    @field_validator("database_url")
+    @classmethod
+    def use_psycopg_driver(cls, url: str) -> str:
+        # Hosting providers hand out plain postgres:// URLs; pin the driver we ship.
+        for prefix in ("postgres://", "postgresql://"):
+            if url.startswith(prefix):
+                return "postgresql+psycopg://" + url.removeprefix(prefix)
+        return url
 
 
 @lru_cache

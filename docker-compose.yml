@@ -2,7 +2,7 @@
 # Start: docker compose up -d    Stop: docker compose down
 services:
   db:
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     environment:
       POSTGRES_USER: berth
       POSTGRES_PASSWORD: berth
@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - berth-db:/var/lib/postgresql/data
+      - berth-db:/var/lib/postgresql
       - ./apps/api/scripts/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U berth"]

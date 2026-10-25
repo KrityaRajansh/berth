@@ -64,7 +64,7 @@ Black-box techniques are used throughout: **equivalence partitioning** (valid an
 
 | Environment | Description | Used for |
 |---|---|---|
-| Local | Windows 11, Python 3.12, Node 22, PostgreSQL 17 in Docker | Unit, integration, e2e during development |
+| Local | Windows 11, Python 3.12, Node 22, PostgreSQL 18 in Docker | Unit, integration, e2e during development |
 | CI | GitHub Actions Ubuntu runner with a PostgreSQL service container | All automated tests on each push |
 | Deployed | Vercel (web and API) with a Neon database branch for testing | System and acceptance tests, performance |
 
