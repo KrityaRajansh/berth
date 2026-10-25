@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState, type FormEvent } from "react";
-import { Link, Navigate, useNavigate, useParams } from "react-router";
+import { Link, Navigate, useParams } from "react-router";
 
 import { ApiError, api, call, errorMessage } from "../../api/client";
 import { Button } from "../../components/Button";
@@ -23,7 +23,6 @@ function useCountdown(until: string | undefined): number {
 
 export function PaymentPage() {
   const { id = "" } = useParams();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [method, setMethod] = useState<Method>("card");
   const [cardNumber, setCardNumber] = useState("");
@@ -48,10 +47,10 @@ export function PaymentPage() {
         }),
       ),
     onSuccess: (paid) => {
+      // The BOOKED status below redirects to the confirmation page.
       queryClient.setQueryData(["booking", id], paid);
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
       queryClient.invalidateQueries({ queryKey: ["search"] });
-      navigate(`/bookings/${id}`, { replace: true, state: { justBooked: true } });
     },
     onError: (error) => {
       // Anything other than a declined card changes the booking's status.
@@ -64,7 +63,9 @@ export function PaymentPage() {
   if (booking.isPending) return <Spinner label="Loading booking" />;
   if (booking.isError) return <Alert tone="error">{errorMessage(booking.error)}</Alert>;
   const b = booking.data;
-  if (b.status === "BOOKED") return <Navigate to={`/bookings/${id}`} replace />;
+  if (b.status === "BOOKED") {
+    return <Navigate to={`/bookings/${id}`} replace state={{ justBooked: pay.isSuccess }} />;
+  }
 
   const expired = b.status === "EXPIRED" || secondsLeft === 0;
   const closed = b.status !== "PENDING_PAYMENT";
@@ -77,7 +78,7 @@ export function PaymentPage() {
   return (
     <section>
       <PageHeader title="Payment" subtitle="Step 2 of 2: pay to confirm your booking." />
-      <div className="grid gap-6 lg:grid-cols-[1fr_20rem]">
+      <div className="grid gap-6 lg:grid-cols-[1fr_20rem] [&>*]:min-w-0">
         <div className="space-y-4">
           {closed || expired ? (
             <Alert tone="warning" title="This booking can no longer be paid for">

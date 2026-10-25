@@ -92,7 +92,7 @@ export function BookPage() {
   return (
     <section>
       <PageHeader title="Passenger details" subtitle="Step 1 of 2: enter travellers, then pay." />
-      <div className="grid gap-6 lg:grid-cols-[1fr_20rem]">
+      <div className="grid gap-6 lg:grid-cols-[1fr_20rem] [&>*]:min-w-0">
         <form onSubmit={submit} noValidate className="space-y-6">
           <Card>
             <PassengerForm passengers={passengers} errors={errors} onChange={setPassengers} />

@@ -72,3 +72,51 @@ jobs:
       - name: Build
         working-directory: apps/web
         run: pnpm build
+
+  e2e:
+    name: End-to-end (Playwright)
+    runs-on: ubuntu-latest
+    needs: [api, web]
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: berth
+          POSTGRES_PASSWORD: berth
+          POSTGRES_DB: berth
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U berth"
+          --health-interval 5s
+          --health-retries 10
+    env:
+      E2E_DATABASE_URL: postgresql+psycopg://berth:berth@localhost:5432/berth_e2e
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Install API dependencies
+        working-directory: apps/api
+        run: uv sync --locked
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install web and test dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Chromium
+        working-directory: e2e
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run end-to-end tests
+        working-directory: e2e
+        run: pnpm test
+      - name: Upload report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: e2e/playwright-report
+          retention-days: 7

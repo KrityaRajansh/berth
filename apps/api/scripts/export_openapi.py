@@ -1,6 +1,6 @@
 """Write the API's OpenAPI document to openapi.json for the web client's generated types.
 
-    uv run python -m scripts.export_openapi
+uv run python -m scripts.export_openapi
 """
 
 import json

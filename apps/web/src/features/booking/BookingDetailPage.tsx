@@ -58,7 +58,7 @@ export function BookingDetailPage() {
         </Alert>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_20rem]">
+      <div className="grid gap-6 lg:grid-cols-[1fr_20rem] [&>*]:min-w-0">
         <div className="space-y-6">
           <Card>
             <JourneySummary
