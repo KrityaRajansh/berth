@@ -4,6 +4,8 @@ Online train ticket reservation system. Passengers search trains between station
 
 Built as the group project for CSC702 Software Engineering (Group 13, Assignment 3).
 
+**Live site:** https://berth-76rn.vercel.app (API at https://berth-ebon.vercel.app/api/docs). Payments are simulated: card `4111 1111 1111 1111` or UPI `success@berth` approves, card `4000 0000 0000 0002` or UPI `failure@berth` declines.
+
 ## Repository layout
 
 ```
@@ -36,26 +38,31 @@ docs/            SRS, SDD, test plan and report, UML sources
 
 ## Running locally
 
-```sh
-# Database
-docker compose up -d
+1. Copy `apps/api/.env.example` to `apps/api/.env` and fill in `DATABASE_URL` (local Docker or Neon) and the secrets.
+2. Install and prepare:
 
-# API on http://localhost:8000 (docs at /api/docs)
-cd apps/api
-cp .env.example .env        # then fill in the secrets
-uv sync
-uv run uvicorn app.main:app --reload
+   ```sh
+   pnpm install
+   cd apps/api
+   uv sync
+   uv run alembic upgrade head
+   uv run python -m scripts.seed
+   ```
 
-# Web app on http://localhost:5173 (proxies /api to the API)
-pnpm install
-pnpm dev:web
-```
+3. From the repository root, start the API (http://localhost:8000, docs at `/api/docs`) and the web app (http://localhost:5173) together:
+
+   ```sh
+   pnpm dev
+   ```
+
+For a local database instead of Neon, run `docker compose up -d` first.
 
 ## Tests and checks
 
 ```sh
-cd apps/api && uv run pytest && uv run ruff check . && uv run ruff format --check .
-pnpm test:web && pnpm lint:web
+pnpm test:api     # unit and integration tests (needs the Docker database)
+pnpm test:web     # frontend unit tests
+pnpm test:e2e     # Playwright end-to-end tests (needs the Docker database)
 ```
 
 ## Documents
