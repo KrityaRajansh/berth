@@ -38,6 +38,7 @@ TOOLS_DIR = DOCS_DIR / "tools"
 DOCUMENTS = {
     "srs": DOCS_DIR / "srs" / "srs.md",
     "sdd": DOCS_DIR / "sdd" / "sdd.md",
+    "test": DOCS_DIR / "test" / "test-plan-report.md",
 }
 
 PLANTUML_VERSION = "1.2026.7"
