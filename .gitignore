@@ -36,5 +36,5 @@ blob-report/
 .DS_Store
 Thumbs.db
 
-# Generated docs build output (final PDFs are committed under docs/dist explicitly)
+# Generated docs (rebuild with: uv run docs/build.py; PDFs land in docs/dist, ignored by the dist/ rule above)
 docs/build/
