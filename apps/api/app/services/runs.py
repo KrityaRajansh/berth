@@ -29,18 +29,20 @@ class RunService:
         else:
             trains = self.trains.all(active_only=True)
 
-        created = 0
+        # One query for what already exists, instead of one per train per day.
+        existing = self.runs.existing_dates([t.id for t in trains], start, end)
+        new_runs = []
         for train in trains:
             if len(train.stops) < 2 or not train.coaches:
                 continue
             day = start
             while day <= end:
-                if train.runs_on(day) and not self.runs.exists(train.id, day):
-                    self.session.add(self._new_run(train, day))
-                    created += 1
+                if train.runs_on(day) and (train.id, day) not in existing:
+                    new_runs.append(self._new_run(train, day))
                 day += timedelta(days=1)
+        self.session.add_all(new_runs)
         self.session.commit()
-        return created
+        return len(new_runs)
 
     @staticmethod
     def _new_run(train: Train, day: date) -> TrainRun:

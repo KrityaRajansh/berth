@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    name: API (lint, migrations, tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: berth
+          POSTGRES_PASSWORD: berth
+          POSTGRES_DB: berth_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U berth"
+          --health-interval 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://berth:berth@localhost:5432/berth_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Lint
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+      - name: Tests with coverage
+        run: uv run pytest --cov=app --cov-report=term --cov-fail-under=80
+      - name: Migrations match the models
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+        run: uv run alembic check
+
+  web:
+    name: Web (lint, tests, build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint and format
+        working-directory: apps/web
+        run: |
+          pnpm lint
+          pnpm format:check
+      - name: Tests
+        working-directory: apps/web
+        run: pnpm test
+      - name: Build
+        working-directory: apps/web
+        run: pnpm build

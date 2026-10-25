@@ -33,11 +33,11 @@ class RunRepository:
         )
         return self.session.execute(stmt).scalar_one()
 
-    def exists(self, train_id: int, run_date: date) -> bool:
-        stmt = select(TrainRun.id).where(
-            TrainRun.train_id == train_id, TrainRun.run_date == run_date
+    def existing_dates(self, train_ids: list[int], start: date, end: date) -> set[tuple[int, date]]:
+        stmt = select(TrainRun.train_id, TrainRun.run_date).where(
+            TrainRun.train_id.in_(train_ids), TrainRun.run_date.between(start, end)
         )
-        return self.session.scalar(stmt) is not None
+        return {(train_id, run_date) for train_id, run_date in self.session.execute(stmt)}
 
     def candidates_for_segment(
         self, from_station_id: int, to_station_id: int, journey_date: date
