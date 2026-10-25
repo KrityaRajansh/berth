@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #eef4fb;
+  --color-brand-600: #1f4e8c;
+  --color-brand-700: #183f72;
+  --color-brand-900: #0f2747;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}

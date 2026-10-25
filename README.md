@@ -7,15 +7,64 @@ Built as the group project for CSC702 Software Engineering (Group 13, Assignment
 ## Repository layout
 
 ```
-apps/api     FastAPI backend, PostgreSQL via SQLAlchemy and Alembic
-apps/web     React frontend (Vite, TypeScript)
-e2e          End-to-end tests (Playwright)
-docs         SRS, SDD, test plan and report, UML sources
+apps/
+  api/           FastAPI backend (Python 3.12, SQLAlchemy, Alembic, PostgreSQL)
+    app/
+      api/routes/    HTTP routers
+      services/      business rules
+      repositories/  queries and locking
+      models/        database models
+      schemas/       request and response models
+      jobs/          scheduled jobs
+      core/          configuration, database, security
+    tests/           unit and integration tests
+  web/           React frontend (TypeScript, Vite, Tailwind CSS)
+    src/
+      features/      pages grouped by feature
+      components/    shared components
+      routes/        routing
+e2e/             end-to-end tests (Playwright)
+docs/            SRS, SDD, test plan and report, UML sources
 ```
 
-## Status
+## Prerequisites
 
-Requirements and design documents are in progress. Setup instructions will be added once the applications are scaffolded.
+- Python 3.12 and [uv](https://docs.astral.sh/uv/)
+- Node.js 22 and [pnpm](https://pnpm.io/)
+- Docker (for a local PostgreSQL), or a Neon database
+- Java and Edge or Chrome (only to build the PDF documents)
+
+## Running locally
+
+```sh
+# Database
+docker compose up -d
+
+# API on http://localhost:8000 (docs at /api/docs)
+cd apps/api
+cp .env.example .env        # then fill in the secrets
+uv sync
+uv run uvicorn app.main:app --reload
+
+# Web app on http://localhost:5173 (proxies /api to the API)
+pnpm install
+pnpm dev:web
+```
+
+## Tests and checks
+
+```sh
+cd apps/api && uv run pytest && uv run ruff check . && uv run ruff format --check .
+pnpm test:web && pnpm lint:web
+```
+
+## Documents
+
+The SRS, SDD and test plan are written in Markdown under `docs/` with PlantUML diagrams. Build the PDFs into `docs/dist/` with:
+
+```sh
+uv run docs/build.py
+```
 
 ## Team
 

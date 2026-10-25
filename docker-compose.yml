@@ -1,0 +1,21 @@
+# Local PostgreSQL for development and integration tests.
+# Start: docker compose up -d    Stop: docker compose down
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: berth
+      POSTGRES_PASSWORD: berth
+      POSTGRES_DB: berth
+    ports:
+      - "5432:5432"
+    volumes:
+      - berth-db:/var/lib/postgresql/data
+      - ./apps/api/scripts/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U berth"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  berth-db:
