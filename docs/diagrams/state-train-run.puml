@@ -1,0 +1,20 @@
+@startuml state-train-run
+!include _style.iuml
+skinparam linetype polyline
+hide empty description
+
+[*] --> SCHEDULED : run generation job\nor admin generates runs
+
+state SCHEDULED : bookings and cancellations open
+state CHART_PREPARED : bookings closed,\nwaitlist settled
+state COMPLETED : journey finished
+state CANCELLED : all bookings refunded
+
+SCHEDULED --> CHART_PREPARED : chart preparation job\n[18:00 IST on day before run_date]
+CHART_PREPARED --> COMPLETED : journey completion job\n[arrival at last stop has passed]
+SCHEDULED --> CANCELLED : admin cancels run
+CHART_PREPARED --> CANCELLED : admin cancels run\n[before departure]
+
+COMPLETED --> [*]
+CANCELLED --> [*]
+@enduml

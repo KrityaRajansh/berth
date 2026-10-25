@@ -1,0 +1,115 @@
+@startuml class-services
+!include _style.iuml
+skinparam linetype polyline
+hide empty attributes
+left to right direction
+
+class BookingService {
+  + create(user, request): Booking
+  + pay(booking_id, user, method): BookingResult
+  + get(booking_id, user): Booking
+  + list_for(user): list[Booking]
+}
+
+class CancellationService {
+  + quote(booking_id, user, passenger_ids): RefundQuote
+  + cancel(booking_id, user, passenger_ids): CancellationResult
+  + cancel_run(run_id, admin): int
+}
+
+class WaitlistService {
+  + promote(run_class, segment_hint): list[Passenger]
+  + current_position(passenger): int
+}
+
+class SearchService {
+  + search(from_code, to_code, day, cls): list[SearchResult]
+}
+
+class AvailabilityService {
+  + for_segment(run_class, from_seq, to_seq): Availability
+}
+
+class BerthAllocator {
+  + free_berths(run_class, from_seq, to_seq): list[Berth]
+  + allocate(run_class, booking, passengers): AllocationPlan
+}
+
+class CoachLayout {
+  + berths(coach): list[Berth]
+  + berth_type(cls, berth_no): BerthType
+}
+
+class FareCalculator {
+  + fare(cls, distance_km): FareBreakdown
+}
+
+class RefundPolicy {
+  + refund_for(passenger, departure, now): int
+}
+
+class PaymentService {
+  + charge(booking, method): Payment
+  + refund(booking, amount, reason): Refund
+}
+
+interface PaymentGateway {
+  + charge(amount, reference, method): GatewayResult
+  + refund(gateway_ref, amount): GatewayResult
+}
+
+class MockPaymentGateway {
+  + charge(amount, reference, method): GatewayResult
+  + refund(gateway_ref, amount): GatewayResult
+}
+
+class TicketService {
+  + pdf(booking_id, user): bytes
+  + pnr_status(pnr): PnrStatus
+}
+
+class PnrGenerator {
+  + next(): str
+}
+
+class AuditLog {
+  + record(actor, event, entity, data)
+}
+
+class BookingRepository <<repository>> {
+  + lock(booking_id): Booking
+  + add(booking)
+}
+
+class InventoryRepository <<repository>> {
+  + lock_run_class(run_id, cls): TrainRunClass
+  + occupied_berths(run_class, from_seq, to_seq): set
+  + waitlisted(run_class): list[Passenger]
+}
+
+BookingService --> FareCalculator
+BookingService --> BerthAllocator
+BookingService --> PaymentService
+BookingService --> PnrGenerator
+BookingService --> BookingRepository
+BookingService --> InventoryRepository
+BookingService --> AuditLog
+
+CancellationService --> RefundPolicy
+CancellationService --> WaitlistService
+CancellationService --> PaymentService
+CancellationService --> BookingRepository
+CancellationService --> InventoryRepository
+CancellationService --> AuditLog
+
+WaitlistService --> BerthAllocator
+SearchService --> AvailabilityService
+SearchService --> FareCalculator
+AvailabilityService --> BerthAllocator
+BerthAllocator --> CoachLayout
+BerthAllocator --> InventoryRepository
+
+PaymentService --> PaymentGateway
+MockPaymentGateway ..|> PaymentGateway
+TicketService --> BookingRepository
+@enduml

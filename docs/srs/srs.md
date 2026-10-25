@@ -149,10 +149,10 @@ Priority uses MoSCoW: **M** = Must, **S** = Should, **C** = Could.
 | FR-BKG-02 | A booking shall contain 1 to 6 passengers, each with name, age and gender. | M |
 | FR-BKG-03 | The system shall validate passenger details (name 2–50 letters, age 1–120, gender `M`/`F`/`T`). | M |
 | FR-BKG-04 | The system shall create the booking in `PENDING_PAYMENT` state and show the amount payable. | M |
-| FR-BKG-05 | After successful payment, the system shall allocate a berth to each passenger in order while berths are available for the segment, and waitlist the remaining passengers (BR-05). | M |
-| FR-BKG-06 | The system shall reject the booking and refund the payment if the combined berth and waitlist capacity cannot accommodate all passengers. | M |
+| FR-BKG-05 | On payment, the system shall allocate a berth to each passenger in order while berths are available for the segment, and waitlist the remaining passengers (BR-05). | M |
+| FR-BKG-06 | At payment time, if the combined berth and waitlist capacity cannot accommodate all passengers, the system shall reject the booking without charging the passenger. | M |
 | FR-BKG-07 | Allocation shall be performed so that concurrent bookings never receive the same berth for overlapping segments. | M |
-| FR-BKG-08 | The system shall allow the passenger to choose "book only if all berths are confirmed"; if not possible, the booking shall be rejected and refunded. | C |
+| FR-BKG-08 | The system shall allow the passenger to choose "book only if all berths are confirmed"; if that is not possible at payment time, the booking shall be rejected without charge. | C |
 | FR-BKG-09 | The system shall try to honour each passenger's berth preference (lower, middle, upper, side lower, side upper) when allocating. | C |
 
 ## 5.5 Payment (PAY)
@@ -357,7 +357,7 @@ All software listed is free and open source or available on a free tier (NFR-20)
 | Backend language | Python 3.12 |
 | Backend framework | FastAPI, Pydantic |
 | Data access | SQLAlchemy 2, Alembic (migrations), psycopg 3 |
-| Frontend | React 18, TypeScript, Vite, Tailwind CSS, React Router, TanStack Query |
+| Frontend | React 19, TypeScript, Vite, Tailwind CSS, React Router, TanStack Query |
 | PDF and QR | ReportLab, qrcode |
 | Testing | pytest, pytest-cov, Vitest, React Testing Library, Playwright |
 | Code quality | Ruff, ESLint, Prettier |
@@ -371,7 +371,7 @@ All software listed is free and open source or available on a free tier (NFR-20)
 | ID | Assumption |
 |---|---|
 | A-01 | Train, station and route data is entered by administrators or seeded; it is not imported from any real railway system. |
-| A-02 | Each coach of a class has the same berth layout (SL and 3A: 72 berths; 2A: 48 berths; 1A: 24 berths). |
+| A-02 | Each coach of a class has the same berth layout (SL: 72 berths; 3A: 64; 2A: 48; 1A: 24). |
 | A-03 | Train timings are fixed per schedule; delays are not modelled. |
 | A-04 | Users have a valid e-mail address, but the system does not verify it by sending mail. |
 | A-05 | The mock payment gateway behaves like a real one: it can succeed or fail, and refunds are recorded immediately. |

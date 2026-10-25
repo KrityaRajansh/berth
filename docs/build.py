@@ -5,21 +5,26 @@
 """Render the project documents in docs/ to PDF.
 
 Each document is a Markdown file with a YAML front matter block. The script
-converts it to HTML with a cover page and table of contents, then prints the
-HTML to PDF with a locally installed Edge or Chrome in headless mode.
+renders the PlantUML diagrams in docs/diagrams to SVG, converts each document
+to HTML with a cover page and table of contents, then prints the HTML to PDF
+with a locally installed Edge or Chrome in headless mode.
+
+Requires Java (for PlantUML) and Edge or Chrome.
 
 Usage:
     uv run docs/build.py            # build every document
-    uv run docs/build.py srs        # build only docs/srs/srs.md
+    uv run docs/build.py srs sdd    # build only the named documents
 """
 
 from __future__ import annotations
 
+import hashlib
 import html
 import shutil
 import subprocess
 import sys
 import tempfile
+import urllib.request
 from pathlib import Path
 
 import markdown
@@ -28,9 +33,18 @@ import yaml
 DOCS_DIR = Path(__file__).resolve().parent
 BUILD_DIR = DOCS_DIR / "build"
 DIST_DIR = DOCS_DIR / "dist"
+DIAGRAMS_DIR = DOCS_DIR / "diagrams"
+TOOLS_DIR = DOCS_DIR / "tools"
 DOCUMENTS = {
     "srs": DOCS_DIR / "srs" / "srs.md",
+    "sdd": DOCS_DIR / "sdd" / "sdd.md",
 }
+
+PLANTUML_VERSION = "1.2026.7"
+PLANTUML_URL = (
+    "https://repo1.maven.org/maven2/net/sourceforge/plantuml/plantuml-mit/"
+    f"{PLANTUML_VERSION}/plantuml-mit-{PLANTUML_VERSION}.jar"
+)
 
 BROWSER_CANDIDATES = [
     Path(r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"),
@@ -49,6 +63,42 @@ def find_browser() -> str:
         if found:
             return found
     sys.exit("No Edge or Chrome installation found; one is needed to print PDFs.")
+
+
+def plantuml_jar() -> Path:
+    jar = TOOLS_DIR / f"plantuml-mit-{PLANTUML_VERSION}.jar"
+    if jar.exists():
+        return jar
+    TOOLS_DIR.mkdir(exist_ok=True)
+    print(f"Downloading PlantUML {PLANTUML_VERSION}")
+    with urllib.request.urlopen(PLANTUML_URL) as resp:
+        data = resp.read()
+    with urllib.request.urlopen(PLANTUML_URL + ".sha1") as resp:
+        expected = resp.read().decode().split()[0].strip()
+    if hashlib.sha1(data).hexdigest() != expected:
+        sys.exit("PlantUML download failed its checksum; not using it.")
+    jar.write_bytes(data)
+    return jar
+
+
+def render_diagrams() -> None:
+    sources = sorted(p for p in DIAGRAMS_DIR.glob("*.puml") if not p.name.startswith("_"))
+    if not sources:
+        return
+    java = shutil.which("java")
+    if not java:
+        sys.exit("Java is required to render diagrams.")
+    out_dir = BUILD_DIR / "diagrams"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    result = subprocess.run(
+        [java, "-jar", str(plantuml_jar()), "-tsvg", "-charset", "UTF-8",
+         "-o", str(out_dir), *map(str, sources)],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        sys.exit(f"PlantUML failed:\n{result.stdout}\n{result.stderr}")
+    print(f"diagrams: {len(sources)} rendered")
 
 
 def split_front_matter(text: str) -> tuple[dict, str]:
@@ -150,6 +200,7 @@ def main(selected: list[str]) -> None:
     browser = find_browser()
     BUILD_DIR.mkdir(exist_ok=True)
     DIST_DIR.mkdir(exist_ok=True)
+    render_diagrams()
 
     for name in names:
         source = DOCUMENTS[name]

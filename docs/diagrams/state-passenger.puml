@@ -1,0 +1,24 @@
+@startuml state-passenger
+!include _style.iuml
+skinparam linetype polyline
+hide empty description
+
+state "Awaiting payment" as PENDING
+state "Confirmed (CNF)" as CNF
+state "Waitlisted (WL)" as WL
+state "Cancelled (CAN)" as CAN
+
+state allocation <<choice>>
+
+[*] --> PENDING : added to booking
+PENDING --> allocation : payment approved
+allocation --> CNF : [berth free for segment]\n/ assign coach and berth
+allocation --> WL : [no berth, waitlist not full]\n/ assign wl_seq
+
+WL --> CNF : promoted after a cancellation\n[berth free for whole segment]
+WL --> CAN : cancelled by user (refund fare minus ₹60),\nat chart preparation or with the train run\n(full refund)
+CNF --> CAN : cancelled by user (refund per BR-06)\nor train run cancelled (full refund)
+
+CNF --> [*] : journey completed
+CAN --> [*]
+@enduml

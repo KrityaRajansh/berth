@@ -1,0 +1,19 @@
+@startuml state-booking
+!include _style.iuml
+skinparam linetype polyline
+hide empty description
+
+[*] --> PENDING_PAYMENT : create booking
+PENDING_PAYMENT --> PENDING_PAYMENT : payment declined
+PENDING_PAYMENT --> BOOKED : payment approved\n[allocation fits]\n/ assign PNR, allocate berths
+PENDING_PAYMENT --> FAILED : pay requested\n[allocation does not fit]
+PENDING_PAYMENT --> EXPIRED : 15 minutes elapsed\n/ expiry job or next read
+
+BOOKED --> CANCELLED : last active passenger cancelled\n(by user, chart preparation\nor train run cancellation)
+BOOKED --> COMPLETED : journey completion job\n[run completed]
+
+FAILED --> [*]
+EXPIRED --> [*]
+CANCELLED --> [*]
+COMPLETED --> [*]
+@enduml

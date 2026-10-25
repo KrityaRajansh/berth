@@ -1,0 +1,34 @@
+@startuml deployment
+!include _style.iuml
+skinparam linetype polyline
+
+node "User device" as device {
+  node "Web browser" as browser
+}
+
+node "Vercel (Hobby plan)" as vercel {
+  node "Edge network / CDN" as cdn {
+    artifact "berth-web\n(static build: HTML, JS, CSS)" as webart
+  }
+  node "Serverless function\n(Python 3.12)" as fn {
+    artifact "berth-api\n(FastAPI ASGI app)" as apiart
+  }
+  node "Vercel Cron" as cron
+}
+
+node "Neon (free plan)" as neon {
+  database "PostgreSQL\n(pooled endpoint)" as pg
+}
+
+node "GitHub" as gh {
+  artifact "berth repository" as repo
+  node "GitHub Actions\n(CI: lint, tests, e2e)" as ci
+}
+
+browser --> cdn : HTTPS
+cdn --> fn : rewrite /api/*
+cron --> fn : HTTPS GET /api/v1/jobs/*\nAuthorization: Bearer CRON_SECRET
+fn --> pg : TLS, port 5432
+repo --> vercel : deploy on push to main
+repo --> ci : on push / pull request
+@enduml

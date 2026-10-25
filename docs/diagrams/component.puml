@@ -1,0 +1,34 @@
+@startuml component
+!include _style.iuml
+skinparam linetype polyline
+
+package "Web client (React SPA)" as web {
+  [Pages and feature modules\n(auth, search, booking,\nmy bookings, PNR, admin)] as pages
+  [Typed API client\n(generated from OpenAPI)] as client
+}
+
+package "API (FastAPI)" as api {
+  [Routers\n(HTTP, validation, auth)] as routers
+  [Services\n(business rules)] as services
+  [Repositories\n(queries, locking)] as repos
+  [ORM models\n(SQLAlchemy)] as models
+  [Payment gateway adapter] as gateway
+  [Job runner] as jobs
+}
+
+database "PostgreSQL\n(Neon)" as db
+cloud "Payment gateway\n(mock)" as pg
+node "Cron scheduler\n(Vercel Cron)" as cron
+
+pages --> client
+client --> routers : HTTPS / JSON\n/api/v1
+routers --> services
+services --> repos
+repos --> models
+models --> db : SQL over TLS
+services --> gateway
+gateway --> pg
+cron --> routers : HTTPS GET\n/api/v1/jobs/*
+routers --> jobs
+jobs --> services
+@enduml

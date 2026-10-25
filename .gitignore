@@ -38,3 +38,4 @@ Thumbs.db
 
 # Generated docs (rebuild with: uv run docs/build.py; PDFs land in docs/dist, ignored by the dist/ rule above)
 docs/build/
+docs/tools/

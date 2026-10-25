@@ -1,0 +1,33 @@
+@startuml seq-search
+!include _style.iuml
+autonumber
+hide footbox
+
+actor Guest
+participant "Web client" as Web
+participant "SearchRouter" as Router
+participant "SearchService" as Search
+participant "AvailabilityService" as Avail
+participant "FareCalculator" as Fare
+database "PostgreSQL" as DB
+
+Guest -> Web : enter from, to, date
+Web -> Router : GET /api/v1/trains/search?from=NDLS&to=MMCT&date=...
+Router -> Search : search(from, to, date, cls)
+Search -> Search : validate (from != to, date within ARP)
+Search -> DB : find runs where route has from before to\nand run_date = date - day_offset(from)
+DB --> Search : runs with stop pairs
+
+loop for each run and class
+  Search -> Avail : for_segment(run_class, from_seq, to_seq)
+  Avail -> DB : count berths with no overlapping CNF passenger;\ncount active WL passengers
+  DB --> Avail : free, waitlisted
+  Avail --> Search : AVAILABLE n / WL n / NOT AVAILABLE / BOOKING CLOSED
+  Search -> Fare : fare(cls, distance_km)
+  Fare --> Search : FareBreakdown
+end
+
+Search --> Router : list[SearchResult]
+Router --> Web : 200 OK (JSON)
+Web --> Guest : trains with times, availability and fare
+@enduml

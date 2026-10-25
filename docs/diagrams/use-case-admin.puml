@@ -1,0 +1,46 @@
+@startuml use-case-admin
+!include _style.iuml
+skinparam linetype polyline
+left to right direction
+
+actor Administrator as Admin
+actor "Scheduler" as Scheduler <<system>>
+actor "Payment gateway" as Gateway <<system>>
+
+rectangle "Berth: operations" {
+  usecase "Log in" as UC_Login
+  usecase "Manage stations" as UC_Stations
+  usecase "Manage trains,\nroutes and coaches" as UC_Trains
+  usecase "View passenger chart" as UC_Chart
+  usecase "View dashboard" as UC_Dash
+  usecase "Cancel train run" as UC_CancelRun
+  usecase "Run job manually" as UC_RunJob
+  usecase "Generate train runs" as UC_Runs
+  usecase "Prepare chart" as UC_Prepare
+  usecase "Complete journeys" as UC_Complete
+  usecase "Expire unpaid bookings" as UC_Expire
+  usecase "Process refund" as UC_Refund
+}
+
+Admin --> UC_Login
+Admin --> UC_Stations
+Admin --> UC_Trains
+Admin --> UC_Chart
+Admin --> UC_Dash
+Admin --> UC_CancelRun
+Admin --> UC_RunJob
+Admin --> UC_Runs
+
+UC_Runs <-- Scheduler
+UC_Prepare <-- Scheduler
+UC_Complete <-- Scheduler
+UC_Expire <-- Scheduler
+
+UC_RunJob ..> UC_Prepare : <<include>>
+UC_RunJob ..> UC_Complete : <<include>>
+UC_RunJob ..> UC_Expire : <<include>>
+UC_CancelRun ..> UC_Refund : <<include>>
+UC_Prepare ..> UC_Refund : <<include>>
+
+UC_Refund --> Gateway
+@enduml

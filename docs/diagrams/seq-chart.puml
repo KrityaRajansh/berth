@@ -1,0 +1,36 @@
+@startuml seq-chart
+!include _style.iuml
+autonumber
+hide footbox
+
+participant "Vercel Cron" as Cron
+participant "JobsRouter" as Router
+participant "JobRunner" as Runner
+participant "ChartPreparationJob" as Job
+participant "PaymentService" as Pay
+database "PostgreSQL" as DB
+
+Cron -> Router : GET /api/v1/jobs/chart-preparation\nAuthorization: Bearer CRON_SECRET
+Router -> Router : verify secret
+Router -> Runner : run(ChartPreparationJob, today)
+Runner -> DB : INSERT job_run (RUNNING)
+
+Runner -> Job : execute(session, today)
+Job -> DB : SELECT runs WHERE run_date = today + 1\nAND status = SCHEDULED
+loop each train run
+  Job -> DB : BEGIN; lock run and its run classes
+  Job -> DB : SELECT WL passengers of BOOKED bookings
+  loop each WL passenger
+    Job -> DB : status = CAN, refund = full fare
+  end
+  Job -> Pay : refund(booking, amount, CHART_PREPARED)\nfor each affected booking
+  Job -> DB : bookings with no active passengers = CANCELLED
+  Job -> DB : run.status = CHART_PREPARED; COMMIT
+end
+Job --> Runner : runs processed
+
+Runner -> DB : UPDATE job_run (SUCCEEDED, items, finished_at)
+Runner --> Router : JobRun
+Router --> Cron : 200 OK
+note over Job, DB : Re-running the job finds no SCHEDULED runs\nfor tomorrow, so it changes nothing (idempotent).
+@enduml

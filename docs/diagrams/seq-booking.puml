@@ -1,0 +1,63 @@
+@startuml seq-booking
+!include _style.iuml
+autonumber
+hide footbox
+
+actor Passenger
+participant "Web client" as Web
+participant "BookingRouter" as Router
+participant "BookingService" as Booking
+participant "BerthAllocator" as Alloc
+participant "PaymentService" as Pay
+participant "Payment gateway\n(mock)" as Gateway
+database "PostgreSQL" as DB
+
+== Create booking ==
+Passenger -> Web : enter passengers, review fare
+Web -> Router : POST /api/v1/bookings
+Router -> Booking : create(user, request)
+Booking -> Booking : validate passengers (1 to 6)\nand run open for booking
+Booking -> DB : INSERT booking (PENDING_PAYMENT,\nexpires_at = now + 15 min) and passengers
+Booking --> Router : booking id, amount payable
+Router --> Web : 201 Created
+
+== Pay ==
+Passenger -> Web : enter card or UPI details
+Web -> Router : POST /api/v1/bookings/{id}/payments
+Router -> Booking : pay(booking_id, user, method)
+Booking -> DB : BEGIN; read booking (run, class)
+Booking -> DB : SELECT train_run_class FOR UPDATE
+note right of DB : lock order: run class, then booking.\nSerialises all bookings and cancellations\nfor this run and class.
+Booking -> DB : SELECT booking FOR UPDATE
+alt booking already BOOKED (repeated request)
+  Booking --> Router : existing result (idempotent)
+else booking expired
+  Booking -> DB : status = EXPIRED; COMMIT
+  Booking --> Router : 410 Gone
+else pending and not expired
+  Booking -> Alloc : allocate(run_class, booking, passengers)
+  Alloc -> DB : occupied berths overlapping segment,\nactive WL count
+  Alloc --> Booking : AllocationPlan (CNF berths, WL count)
+  alt plan cannot fit all passengers
+    Booking -> DB : status = FAILED; COMMIT
+    Booking --> Router : 409 Conflict (no charge)
+  else plan fits
+    Booking -> Pay : charge(booking, method)
+    Pay -> Gateway : charge(amount, booking id, method)
+    alt declined
+      Gateway --> Pay : FAILED
+      Pay -> DB : INSERT payment (FAILED)
+      Booking -> DB : COMMIT (booking stays PENDING_PAYMENT)
+      Booking --> Router : 402 Payment Required
+    else approved
+      Gateway --> Pay : SUCCESS, gateway_ref
+      Pay -> DB : INSERT payment (SUCCESS)
+      Booking -> DB : apply plan to passengers (CNF berth / WL seq),\nassign PNR, status = BOOKED, audit event
+      Booking -> DB : COMMIT
+      Booking --> Router : PNR, passenger statuses
+    end
+  end
+end
+Router --> Web : response
+Web --> Passenger : confirmation page, e-ticket download
+@enduml

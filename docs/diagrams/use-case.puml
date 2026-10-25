@@ -1,0 +1,48 @@
+@startuml use-case
+!include _style.iuml
+skinparam linetype polyline
+left to right direction
+
+actor Guest
+actor Passenger
+actor "Payment gateway" as Gateway <<system>>
+
+Guest <|-- Passenger
+
+rectangle "Berth: passenger services" {
+  usecase "Search trains" as UC_Search
+  usecase "View availability\nand fare" as UC_Avail
+  usecase "Check PNR status" as UC_Pnr
+  usecase "Register" as UC_Register
+  usecase "Log in" as UC_Login
+  usecase "Manage profile" as UC_Profile
+  usecase "Book ticket" as UC_Book
+  usecase "Join waitlist" as UC_Wl
+  usecase "Make payment" as UC_Pay
+  usecase "Download e-ticket" as UC_Ticket
+  usecase "View my bookings" as UC_History
+  usecase "Cancel ticket" as UC_Cancel
+  usecase "Promote waitlist" as UC_Promote
+  usecase "Process refund" as UC_Refund
+}
+
+Guest --> UC_Search
+Guest --> UC_Pnr
+Guest --> UC_Register
+UC_Search ..> UC_Avail : <<include>>
+
+Passenger --> UC_Login
+Passenger --> UC_Profile
+Passenger --> UC_Book
+Passenger --> UC_Ticket
+Passenger --> UC_History
+Passenger --> UC_Cancel
+
+UC_Book ..> UC_Pay : <<include>>
+UC_Wl ..> UC_Book : <<extend>>
+UC_Cancel ..> UC_Refund : <<include>>
+UC_Promote ..> UC_Cancel : <<extend>>
+
+UC_Pay --> Gateway
+UC_Refund --> Gateway
+@enduml

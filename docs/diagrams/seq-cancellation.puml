@@ -1,0 +1,47 @@
+@startuml seq-cancellation
+!include _style.iuml
+autonumber
+hide footbox
+
+actor Passenger
+participant "Web client" as Web
+participant "BookingRouter" as Router
+participant "CancellationService" as Cancel
+participant "RefundPolicy" as Policy
+participant "WaitlistService" as Wl
+participant "BerthAllocator" as Alloc
+participant "PaymentService" as Pay
+database "PostgreSQL" as DB
+
+Passenger -> Web : select passengers to cancel
+Web -> Router : POST /api/v1/bookings/{id}/cancellation-quote
+Router -> Cancel : quote(booking_id, user, passenger_ids)
+Cancel -> Policy : refund_for(passenger, departure, now)
+Policy --> Cancel : refund per passenger
+Cancel --> Web : refund amount
+Passenger -> Web : confirm cancellation
+Web -> Router : POST /api/v1/bookings/{id}/cancellations
+Router -> Cancel : cancel(booking_id, user, passenger_ids)
+Cancel -> DB : BEGIN; SELECT train_run_class FOR UPDATE;\nSELECT booking FOR UPDATE
+Cancel -> Cancel : check owner, BOOKED,\nbefore chart preparation
+Cancel -> Policy : refund_for(each passenger)
+Cancel -> DB : passengers status = CAN, refund amounts
+
+opt a confirmed berth was released
+  Cancel -> Wl : promote(run_class)
+  loop each WL passenger in wl_seq order
+    Wl -> Alloc : free_berths(run_class, from_seq, to_seq)
+    alt berth free for whole segment
+      Wl -> DB : passenger status = CNF, set berth
+    end
+  end
+  Wl --> Cancel : promoted passengers
+end
+
+Cancel -> Pay : refund(booking, total refund, USER_CANCELLATION)
+Pay -> DB : INSERT refund
+Cancel -> DB : if no active passengers: booking = CANCELLED;\naudit events; COMMIT
+Cancel --> Router : CancellationResult
+Router --> Web : 200 OK
+Web --> Passenger : updated booking and refund
+@enduml
