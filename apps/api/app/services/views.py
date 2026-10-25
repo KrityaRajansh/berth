@@ -108,6 +108,7 @@ class BookingPresenter:
             to_station=StationRef.model_validate(booking.to_station),
             journey_date=booking.journey_date,
             departure_at=booking.departure_at,
+            arrival_at=booking.arrival_at,
             booking_status=booking.status,
             chart_prepared=booking.run.status != RunStatus.SCHEDULED,
             passengers=[

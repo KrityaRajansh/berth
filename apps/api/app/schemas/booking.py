@@ -137,6 +137,7 @@ class PnrStatusOut(Schema):
     to_station: StationRef
     journey_date: date
     departure_at: IstDatetime
+    arrival_at: IstDatetime
     booking_status: BookingStatus
     chart_prepared: bool
     passengers: list[PnrPassenger]

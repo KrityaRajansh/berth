@@ -1,0 +1,3142 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Berth API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Health",
+        "operationId": "health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Health Api V1 Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Register",
+        "operationId": "register_api_v1_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Login",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Logout",
+        "operationId": "logout_api_v1_auth_logout_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Me",
+        "operationId": "me_api_v1_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/me": {
+      "patch": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Update Profile",
+        "operationId": "update_profile_api_v1_users_me_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/me/password": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Change Password",
+        "operationId": "change_password_api_v1_users_me_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordChange"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stations": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "Suggest Stations",
+        "operationId": "suggest_stations_api_v1_stations_get",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40,
+              "title": "Q"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StationOut"
+                  },
+                  "title": "Response Suggest Stations Api V1 Stations Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/trains/search": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "Search Trains",
+        "operationId": "search_trains_api_v1_trains_search_get",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 8,
+              "title": "From"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 8,
+              "title": "To"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "title": "Date"
+            }
+          },
+          {
+            "name": "cls",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TravelClass"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cls"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SearchResult"
+                  },
+                  "title": "Response Search Trains Api V1 Trains Search Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/trains/{number}/route": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "Train Route",
+        "operationId": "train_route_api_v1_trains__number__route_get",
+        "parameters": [
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pnr/{pnr}": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "Pnr Status",
+        "operationId": "pnr_status_api_v1_pnr__pnr__get",
+        "parameters": [
+          {
+            "name": "pnr",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Pnr"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PnrStatusOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bookings": {
+      "get": {
+        "tags": [
+          "bookings"
+        ],
+        "summary": "List Bookings",
+        "operationId": "list_bookings_api_v1_bookings_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BookingSummary"
+                  },
+                  "type": "array",
+                  "title": "Response List Bookings Api V1 Bookings Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "bookings"
+        ],
+        "summary": "Create Booking",
+        "operationId": "create_booking_api_v1_bookings_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookingCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bookings/{booking_id}": {
+      "get": {
+        "tags": [
+          "bookings"
+        ],
+        "summary": "Get Booking",
+        "operationId": "get_booking_api_v1_bookings__booking_id__get",
+        "parameters": [
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Booking Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bookings/{booking_id}/payments": {
+      "post": {
+        "tags": [
+          "bookings"
+        ],
+        "summary": "Pay For Booking",
+        "operationId": "pay_for_booking_api_v1_bookings__booking_id__payments_post",
+        "parameters": [
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Booking Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bookings/{booking_id}/cancellation-quote": {
+      "post": {
+        "tags": [
+          "bookings"
+        ],
+        "summary": "Cancellation Quote",
+        "operationId": "cancellation_quote_api_v1_bookings__booking_id__cancellation_quote_post",
+        "parameters": [
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Booking Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancellationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefundQuote"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bookings/{booking_id}/cancellations": {
+      "post": {
+        "tags": [
+          "bookings"
+        ],
+        "summary": "Cancel Passengers",
+        "operationId": "cancel_passengers_api_v1_bookings__booking_id__cancellations_post",
+        "parameters": [
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Booking Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancellationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bookings/{booking_id}/ticket.pdf": {
+      "get": {
+        "tags": [
+          "bookings"
+        ],
+        "summary": "Download Ticket",
+        "operationId": "download_ticket_api_v1_bookings__booking_id__ticket_pdf_get",
+        "parameters": [
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Booking Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/stations": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "List Stations",
+        "operationId": "list_stations_api_v1_admin_stations_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/StationOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Stations Api V1 Admin Stations Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Create Station",
+        "operationId": "create_station_api_v1_admin_stations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StationIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StationOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/stations/{station_id}": {
+      "put": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Update Station",
+        "operationId": "update_station_api_v1_admin_stations__station_id__put",
+        "parameters": [
+          {
+            "name": "station_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Station Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StationIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StationOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/trains": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "List Trains",
+        "operationId": "list_trains_api_v1_admin_trains_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TrainOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Trains Api V1 Admin Trains Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Create Train",
+        "operationId": "create_train_api_v1_admin_trains_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrainIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/trains/{number}": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Get Train",
+        "operationId": "get_train_api_v1_admin_trains__number__get",
+        "parameters": [
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Update Train",
+        "operationId": "update_train_api_v1_admin_trains__number__put",
+        "parameters": [
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrainIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/trains/{number}/route": {
+      "put": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Set Route",
+        "operationId": "set_route_api_v1_admin_trains__number__route_put",
+        "parameters": [
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RouteStopIn"
+                },
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/trains/{number}/coaches": {
+      "put": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Set Coaches",
+        "operationId": "set_coaches_api_v1_admin_trains__number__coaches_put",
+        "parameters": [
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CoachIn"
+                },
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/runs": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "List Runs",
+        "operationId": "list_runs_api_v1_admin_runs_get",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date"
+            }
+          },
+          {
+            "name": "train",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Train"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RunOut"
+                  },
+                  "title": "Response List Runs Api V1 Admin Runs Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/runs/generate": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Generate Runs",
+        "operationId": "generate_runs_api_v1_admin_runs_generate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateRunsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateRunsResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/runs/{run_id}/cancel": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Cancel Run",
+        "operationId": "cancel_run_api_v1_admin_runs__run_id__cancel_post",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "title": "Response Cancel Run Api V1 Admin Runs  Run Id  Cancel Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/runs/{run_id}/chart": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Passenger Chart",
+        "operationId": "passenger_chart_api_v1_admin_runs__run_id__chart_get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChartRow"
+                  },
+                  "title": "Response Passenger Chart Api V1 Admin Runs  Run Id  Chart Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/jobs": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Job History",
+        "operationId": "job_history_api_v1_admin_jobs_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/JobRunOut"
+                  },
+                  "type": "array",
+                  "title": "Response Job History Api V1 Admin Jobs Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/jobs/{name}/run": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Run Job",
+        "operationId": "run_job_api_v1_admin_jobs__name__run_post",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobRunOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/stats": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Stats",
+        "operationId": "stats_api_v1_admin_stats_get",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "title": "Start"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "title": "End"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/chart-preparation": {
+      "get": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Chart Preparation",
+        "operationId": "chart_preparation_api_v1_jobs_chart_preparation_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobRunOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/nightly": {
+      "get": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Nightly",
+        "operationId": "nightly_api_v1_jobs_nightly_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobRunOut"
+                  },
+                  "title": "Response Nightly Api V1 Jobs Nightly Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BerthType": {
+        "type": "string",
+        "enum": [
+          "LB",
+          "MB",
+          "UB",
+          "SL",
+          "SU"
+        ],
+        "title": "BerthType"
+      },
+      "BookingCreate": {
+        "properties": {
+          "run_id": {
+            "type": "integer",
+            "title": "Run Id"
+          },
+          "travel_class": {
+            "$ref": "#/components/schemas/TravelClass"
+          },
+          "from_code": {
+            "type": "string",
+            "title": "From Code"
+          },
+          "to_code": {
+            "type": "string",
+            "title": "To Code"
+          },
+          "passengers": {
+            "items": {
+              "$ref": "#/components/schemas/PassengerIn"
+            },
+            "type": "array",
+            "maxItems": 6,
+            "minItems": 1,
+            "title": "Passengers"
+          },
+          "confirm_only": {
+            "type": "boolean",
+            "title": "Confirm Only",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "travel_class",
+          "from_code",
+          "to_code",
+          "passengers"
+        ],
+        "title": "BookingCreate"
+      },
+      "BookingOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "pnr": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pnr"
+          },
+          "status": {
+            "$ref": "#/components/schemas/BookingStatus"
+          },
+          "train_number": {
+            "type": "string",
+            "title": "Train Number"
+          },
+          "train_name": {
+            "type": "string",
+            "title": "Train Name"
+          },
+          "travel_class": {
+            "$ref": "#/components/schemas/TravelClass"
+          },
+          "from_station": {
+            "$ref": "#/components/schemas/StationRef"
+          },
+          "to_station": {
+            "$ref": "#/components/schemas/StationRef"
+          },
+          "journey_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Journey Date"
+          },
+          "departure_at": {
+            "type": "string",
+            "title": "Departure At"
+          },
+          "arrival_at": {
+            "type": "string",
+            "title": "Arrival At"
+          },
+          "distance_km": {
+            "type": "integer",
+            "title": "Distance Km"
+          },
+          "total_fare_paise": {
+            "type": "integer",
+            "title": "Total Fare Paise"
+          },
+          "refunded_paise": {
+            "type": "integer",
+            "title": "Refunded Paise"
+          },
+          "confirm_only": {
+            "type": "boolean",
+            "title": "Confirm Only"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "expires_at": {
+            "type": "string",
+            "title": "Expires At"
+          },
+          "chart_prepared": {
+            "type": "boolean",
+            "title": "Chart Prepared"
+          },
+          "can_cancel": {
+            "type": "boolean",
+            "title": "Can Cancel"
+          },
+          "passengers": {
+            "items": {
+              "$ref": "#/components/schemas/PassengerOut"
+            },
+            "type": "array",
+            "title": "Passengers"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "pnr",
+          "status",
+          "train_number",
+          "train_name",
+          "travel_class",
+          "from_station",
+          "to_station",
+          "journey_date",
+          "departure_at",
+          "arrival_at",
+          "distance_km",
+          "total_fare_paise",
+          "refunded_paise",
+          "confirm_only",
+          "created_at",
+          "expires_at",
+          "chart_prepared",
+          "can_cancel",
+          "passengers"
+        ],
+        "title": "BookingOut"
+      },
+      "BookingStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING_PAYMENT",
+          "BOOKED",
+          "FAILED",
+          "EXPIRED",
+          "CANCELLED",
+          "COMPLETED"
+        ],
+        "title": "BookingStatus"
+      },
+      "BookingSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "pnr": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pnr"
+          },
+          "status": {
+            "$ref": "#/components/schemas/BookingStatus"
+          },
+          "train_number": {
+            "type": "string",
+            "title": "Train Number"
+          },
+          "train_name": {
+            "type": "string",
+            "title": "Train Name"
+          },
+          "travel_class": {
+            "$ref": "#/components/schemas/TravelClass"
+          },
+          "from_station": {
+            "$ref": "#/components/schemas/StationRef"
+          },
+          "to_station": {
+            "$ref": "#/components/schemas/StationRef"
+          },
+          "journey_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Journey Date"
+          },
+          "departure_at": {
+            "type": "string",
+            "title": "Departure At"
+          },
+          "passenger_count": {
+            "type": "integer",
+            "title": "Passenger Count"
+          },
+          "total_fare_paise": {
+            "type": "integer",
+            "title": "Total Fare Paise"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "pnr",
+          "status",
+          "train_number",
+          "train_name",
+          "travel_class",
+          "from_station",
+          "to_station",
+          "journey_date",
+          "departure_at",
+          "passenger_count",
+          "total_fare_paise"
+        ],
+        "title": "BookingSummary"
+      },
+      "CancellationRequest": {
+        "properties": {
+          "passenger_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "maxItems": 6,
+            "minItems": 1,
+            "title": "Passenger Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "passenger_ids"
+        ],
+        "title": "CancellationRequest"
+      },
+      "ChartRow": {
+        "properties": {
+          "pnr": {
+            "type": "string",
+            "title": "Pnr"
+          },
+          "passenger": {
+            "type": "string",
+            "title": "Passenger"
+          },
+          "age": {
+            "type": "integer",
+            "title": "Age"
+          },
+          "gender": {
+            "type": "string",
+            "title": "Gender"
+          },
+          "travel_class": {
+            "$ref": "#/components/schemas/TravelClass"
+          },
+          "from_code": {
+            "type": "string",
+            "title": "From Code"
+          },
+          "to_code": {
+            "type": "string",
+            "title": "To Code"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "coach_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coach Code"
+          },
+          "berth_no": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Berth No"
+          },
+          "berth_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Berth Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pnr",
+          "passenger",
+          "age",
+          "gender",
+          "travel_class",
+          "from_code",
+          "to_code",
+          "status",
+          "coach_code",
+          "berth_no",
+          "berth_type"
+        ],
+        "title": "ChartRow"
+      },
+      "ClassAvailability": {
+        "properties": {
+          "travel_class": {
+            "$ref": "#/components/schemas/TravelClass"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "AVAILABLE",
+              "WAITLIST",
+              "NOT_AVAILABLE",
+              "BOOKING_CLOSED",
+              "CANCELLED"
+            ],
+            "title": "Status"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "fare": {
+            "$ref": "#/components/schemas/FareOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "travel_class",
+          "status",
+          "count",
+          "fare"
+        ],
+        "title": "ClassAvailability"
+      },
+      "CoachIn": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[A-Z]{1,2}\\d{1,2}$",
+            "title": "Code"
+          },
+          "travel_class": {
+            "$ref": "#/components/schemas/TravelClass"
+          },
+          "berth_count": {
+            "type": "integer",
+            "maximum": 72.0,
+            "minimum": 1.0,
+            "title": "Berth Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "travel_class",
+          "berth_count"
+        ],
+        "title": "CoachIn"
+      },
+      "CoachOut": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[A-Z]{1,2}\\d{1,2}$",
+            "title": "Code"
+          },
+          "travel_class": {
+            "$ref": "#/components/schemas/TravelClass"
+          },
+          "berth_count": {
+            "type": "integer",
+            "maximum": 72.0,
+            "minimum": 1.0,
+            "title": "Berth Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "travel_class",
+          "berth_count"
+        ],
+        "title": "CoachOut"
+      },
+      "FareOut": {
+        "properties": {
+          "base_paise": {
+            "type": "integer",
+            "title": "Base Paise"
+          },
+          "reservation_paise": {
+            "type": "integer",
+            "title": "Reservation Paise"
+          },
+          "gst_paise": {
+            "type": "integer",
+            "title": "Gst Paise"
+          },
+          "total_paise": {
+            "type": "integer",
+            "title": "Total Paise"
+          }
+        },
+        "type": "object",
+        "required": [
+          "base_paise",
+          "reservation_paise",
+          "gst_paise",
+          "total_paise"
+        ],
+        "title": "FareOut"
+      },
+      "Gender": {
+        "type": "string",
+        "enum": [
+          "M",
+          "F",
+          "T"
+        ],
+        "title": "Gender"
+      },
+      "GenerateRunsRequest": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date",
+            "title": "End"
+          },
+          "train_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Train Number"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "GenerateRunsRequest"
+      },
+      "GenerateRunsResult": {
+        "properties": {
+          "created": {
+            "type": "integer",
+            "title": "Created"
+          }
+        },
+        "type": "object",
+        "required": [
+          "created"
+        ],
+        "title": "GenerateRunsResult"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "JobRunOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "job_name": {
+            "type": "string",
+            "title": "Job Name"
+          },
+          "triggered_by": {
+            "type": "string",
+            "title": "Triggered By"
+          },
+          "started_at": {
+            "type": "string",
+            "title": "Started At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          },
+          "items_processed": {
+            "type": "integer",
+            "title": "Items Processed"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "job_name",
+          "triggered_by",
+          "started_at",
+          "finished_at",
+          "status",
+          "items_processed",
+          "detail"
+        ],
+        "title": "JobRunOut"
+      },
+      "JobStatus": {
+        "type": "string",
+        "enum": [
+          "RUNNING",
+          "SUCCEEDED",
+          "FAILED"
+        ],
+        "title": "JobStatus"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest"
+      },
+      "PassengerIn": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 2,
+            "title": "Name"
+          },
+          "age": {
+            "type": "integer",
+            "maximum": 120.0,
+            "minimum": 1.0,
+            "title": "Age"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "berth_pref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BerthType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "age",
+          "gender"
+        ],
+        "title": "PassengerIn"
+      },
+      "PassengerOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "seq_no": {
+            "type": "integer",
+            "title": "Seq No"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "age": {
+            "type": "integer",
+            "title": "Age"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "berth_pref": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BerthType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "booking_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Booking Status"
+          },
+          "current_status": {
+            "type": "string",
+            "title": "Current Status"
+          },
+          "fare_paise": {
+            "type": "integer",
+            "title": "Fare Paise"
+          },
+          "refund_paise": {
+            "type": "integer",
+            "title": "Refund Paise"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "seq_no",
+          "name",
+          "age",
+          "gender",
+          "berth_pref",
+          "booking_status",
+          "current_status",
+          "fare_paise",
+          "refund_paise"
+        ],
+        "title": "PassengerOut"
+      },
+      "PasswordChange": {
+        "properties": {
+          "current_password": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Current Password"
+          },
+          "new_password": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 8,
+            "title": "New Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "current_password",
+          "new_password"
+        ],
+        "title": "PasswordChange"
+      },
+      "PaymentRequest": {
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "card",
+              "upi"
+            ],
+            "title": "Method"
+          },
+          "card_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Card Number"
+          },
+          "upi_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upi Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "method"
+        ],
+        "title": "PaymentRequest"
+      },
+      "PnrPassenger": {
+        "properties": {
+          "seq_no": {
+            "type": "integer",
+            "title": "Seq No"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "booking_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Booking Status"
+          },
+          "current_status": {
+            "type": "string",
+            "title": "Current Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seq_no",
+          "name",
+          "booking_status",
+          "current_status"
+        ],
+        "title": "PnrPassenger"
+      },
+      "PnrStatusOut": {
+        "properties": {
+          "pnr": {
+            "type": "string",
+            "title": "Pnr"
+          },
+          "train_number": {
+            "type": "string",
+            "title": "Train Number"
+          },
+          "train_name": {
+            "type": "string",
+            "title": "Train Name"
+          },
+          "travel_class": {
+            "$ref": "#/components/schemas/TravelClass"
+          },
+          "from_station": {
+            "$ref": "#/components/schemas/StationRef"
+          },
+          "to_station": {
+            "$ref": "#/components/schemas/StationRef"
+          },
+          "journey_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Journey Date"
+          },
+          "departure_at": {
+            "type": "string",
+            "title": "Departure At"
+          },
+          "arrival_at": {
+            "type": "string",
+            "title": "Arrival At"
+          },
+          "booking_status": {
+            "$ref": "#/components/schemas/BookingStatus"
+          },
+          "chart_prepared": {
+            "type": "boolean",
+            "title": "Chart Prepared"
+          },
+          "passengers": {
+            "items": {
+              "$ref": "#/components/schemas/PnrPassenger"
+            },
+            "type": "array",
+            "title": "Passengers"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pnr",
+          "train_number",
+          "train_name",
+          "travel_class",
+          "from_station",
+          "to_station",
+          "journey_date",
+          "departure_at",
+          "arrival_at",
+          "booking_status",
+          "chart_prepared",
+          "passengers"
+        ],
+        "title": "PnrStatusOut"
+      },
+      "ProfileUpdate": {
+        "properties": {
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "mobile": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[6-9]\\d{9}$",
+                "description": "10-digit Indian mobile number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mobile"
+          }
+        },
+        "type": "object",
+        "title": "ProfileUpdate"
+      },
+      "RefundLine": {
+        "properties": {
+          "passenger_id": {
+            "type": "integer",
+            "title": "Passenger Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "refund_paise": {
+            "type": "integer",
+            "title": "Refund Paise"
+          }
+        },
+        "type": "object",
+        "required": [
+          "passenger_id",
+          "name",
+          "status",
+          "refund_paise"
+        ],
+        "title": "RefundLine"
+      },
+      "RefundQuote": {
+        "properties": {
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/RefundLine"
+            },
+            "type": "array",
+            "title": "Lines"
+          },
+          "total_refund_paise": {
+            "type": "integer",
+            "title": "Total Refund Paise"
+          }
+        },
+        "type": "object",
+        "required": [
+          "lines",
+          "total_refund_paise"
+        ],
+        "title": "RefundQuote"
+      },
+      "RegisterRequest": {
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "mobile": {
+            "type": "string",
+            "pattern": "^[6-9]\\d{9}$",
+            "title": "Mobile",
+            "description": "10-digit Indian mobile number"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 8,
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "full_name",
+          "email",
+          "mobile",
+          "password"
+        ],
+        "title": "RegisterRequest"
+      },
+      "Role": {
+        "type": "string",
+        "enum": [
+          "PASSENGER",
+          "ADMIN"
+        ],
+        "title": "Role"
+      },
+      "RouteStopIn": {
+        "properties": {
+          "station_code": {
+            "type": "string",
+            "pattern": "^[A-Z]{2,8}$",
+            "title": "Station Code"
+          },
+          "arrival": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Arrival"
+          },
+          "departure": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Departure"
+          },
+          "day_offset": {
+            "type": "integer",
+            "maximum": 6.0,
+            "minimum": 0.0,
+            "title": "Day Offset"
+          },
+          "distance_km": {
+            "type": "integer",
+            "maximum": 5000.0,
+            "minimum": 0.0,
+            "title": "Distance Km"
+          }
+        },
+        "type": "object",
+        "required": [
+          "station_code",
+          "day_offset",
+          "distance_km"
+        ],
+        "title": "RouteStopIn"
+      },
+      "RouteStopOut": {
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "title": "Seq"
+          },
+          "station_code": {
+            "type": "string",
+            "title": "Station Code"
+          },
+          "station_name": {
+            "type": "string",
+            "title": "Station Name"
+          },
+          "arrival": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Arrival"
+          },
+          "departure": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Departure"
+          },
+          "day_offset": {
+            "type": "integer",
+            "title": "Day Offset"
+          },
+          "distance_km": {
+            "type": "integer",
+            "title": "Distance Km"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seq",
+          "station_code",
+          "station_name",
+          "arrival",
+          "departure",
+          "day_offset",
+          "distance_km"
+        ],
+        "title": "RouteStopOut"
+      },
+      "RunClassOut": {
+        "properties": {
+          "travel_class": {
+            "$ref": "#/components/schemas/TravelClass"
+          },
+          "berth_capacity": {
+            "type": "integer",
+            "title": "Berth Capacity"
+          },
+          "confirmed": {
+            "type": "integer",
+            "title": "Confirmed"
+          },
+          "waitlisted": {
+            "type": "integer",
+            "title": "Waitlisted"
+          }
+        },
+        "type": "object",
+        "required": [
+          "travel_class",
+          "berth_capacity",
+          "confirmed",
+          "waitlisted"
+        ],
+        "title": "RunClassOut"
+      },
+      "RunOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "train_number": {
+            "type": "string",
+            "title": "Train Number"
+          },
+          "train_name": {
+            "type": "string",
+            "title": "Train Name"
+          },
+          "run_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Run Date"
+          },
+          "status": {
+            "$ref": "#/components/schemas/RunStatus"
+          },
+          "chart_prepared_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chart Prepared At"
+          },
+          "classes": {
+            "items": {
+              "$ref": "#/components/schemas/RunClassOut"
+            },
+            "type": "array",
+            "title": "Classes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "train_number",
+          "train_name",
+          "run_date",
+          "status",
+          "chart_prepared_at",
+          "classes"
+        ],
+        "title": "RunOut"
+      },
+      "RunStatus": {
+        "type": "string",
+        "enum": [
+          "SCHEDULED",
+          "CHART_PREPARED",
+          "COMPLETED",
+          "CANCELLED"
+        ],
+        "title": "RunStatus"
+      },
+      "SearchResult": {
+        "properties": {
+          "run_id": {
+            "type": "integer",
+            "title": "Run Id"
+          },
+          "train_number": {
+            "type": "string",
+            "title": "Train Number"
+          },
+          "train_name": {
+            "type": "string",
+            "title": "Train Name"
+          },
+          "from_station": {
+            "$ref": "#/components/schemas/StationRef"
+          },
+          "to_station": {
+            "$ref": "#/components/schemas/StationRef"
+          },
+          "journey_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Journey Date"
+          },
+          "departure_at": {
+            "type": "string",
+            "title": "Departure At"
+          },
+          "arrival_at": {
+            "type": "string",
+            "title": "Arrival At"
+          },
+          "duration_minutes": {
+            "type": "integer",
+            "title": "Duration Minutes"
+          },
+          "distance_km": {
+            "type": "integer",
+            "title": "Distance Km"
+          },
+          "classes": {
+            "items": {
+              "$ref": "#/components/schemas/ClassAvailability"
+            },
+            "type": "array",
+            "title": "Classes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "train_number",
+          "train_name",
+          "from_station",
+          "to_station",
+          "journey_date",
+          "departure_at",
+          "arrival_at",
+          "duration_minutes",
+          "distance_km",
+          "classes"
+        ],
+        "title": "SearchResult"
+      },
+      "StationIn": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[A-Z]{2,8}$",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 2,
+            "title": "Name"
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 2,
+            "title": "City"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "name",
+          "city"
+        ],
+        "title": "StationIn"
+      },
+      "StationOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "name",
+          "city",
+          "is_active"
+        ],
+        "title": "StationOut"
+      },
+      "StationRef": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "name"
+        ],
+        "title": "StationRef"
+      },
+      "StatsOut": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date",
+            "title": "End"
+          },
+          "bookings": {
+            "type": "integer",
+            "title": "Bookings"
+          },
+          "passengers": {
+            "type": "integer",
+            "title": "Passengers"
+          },
+          "cancellations": {
+            "type": "integer",
+            "title": "Cancellations"
+          },
+          "revenue_paise": {
+            "type": "integer",
+            "title": "Revenue Paise"
+          },
+          "refunds_paise": {
+            "type": "integer",
+            "title": "Refunds Paise"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "bookings",
+          "passengers",
+          "cancellations",
+          "revenue_paise",
+          "refunds_paise"
+        ],
+        "title": "StatsOut"
+      },
+      "TrainIn": {
+        "properties": {
+          "number": {
+            "type": "string",
+            "pattern": "^\\d{5}$",
+            "title": "Number"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 3,
+            "title": "Name"
+          },
+          "running_days": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "maxItems": 7,
+            "minItems": 1,
+            "title": "Running Days",
+            "description": "0 = Monday"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "number",
+          "name",
+          "running_days"
+        ],
+        "title": "TrainIn"
+      },
+      "TrainOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "running_days": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Running Days"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "stops": {
+            "items": {
+              "$ref": "#/components/schemas/RouteStopOut"
+            },
+            "type": "array",
+            "title": "Stops"
+          },
+          "coaches": {
+            "items": {
+              "$ref": "#/components/schemas/CoachOut"
+            },
+            "type": "array",
+            "title": "Coaches"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "name",
+          "running_days",
+          "is_active",
+          "stops",
+          "coaches"
+        ],
+        "title": "TrainOut"
+      },
+      "TravelClass": {
+        "type": "string",
+        "enum": [
+          "SL",
+          "3A",
+          "2A",
+          "1A"
+        ],
+        "title": "TravelClass"
+      },
+      "UserOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "full_name": {
+            "type": "string",
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "mobile": {
+            "type": "string",
+            "title": "Mobile"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "full_name",
+          "email",
+          "mobile",
+          "role"
+        ],
+        "title": "UserOut"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
