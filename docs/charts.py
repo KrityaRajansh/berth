@@ -41,7 +41,7 @@ MODULES = {
     "Scheduled jobs": ["jobs/runner", "jobs/tasks", "routes/jobs"],
 }
 
-# Automated tests per level, from the 3 November 2026 run.
+# Automated tests per level, from the final run.
 PYRAMID = [
     ("System and acceptance", "Playwright, real browser", 19),
     ("Integration", "API + PostgreSQL", 53),

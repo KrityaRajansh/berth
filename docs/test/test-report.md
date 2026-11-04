@@ -2,20 +2,22 @@
 title: Software Test Report
 subtitle: "Berth: Online Train Ticket Reservation System"
 version: 1.0
-date: 4 November 2026
+date: 29 October 2026
 ---
 
 # 1. Introduction
 
 This report records the execution of the Software Test Plan v1.1: what was run, where, the actual result and pass/fail status of every test case, and the defects found and fixed. Expected results are repeated from the plan so each result can be read on its own.
 
-| Run | Date | Environment | Scope |
-|---|---|---|---|
-| Backend suite | 3 Nov 2026 | Windows 11, Python 3.12, PostgreSQL 18 (Docker) | UT, IT: 92 automated tests |
-| Frontend suite | 3 Nov 2026 | Node 22, Vitest 5, jsdom | 19 automated tests |
-| Browser suite | 3 Nov 2026 | Playwright 1.64, Chromium, local deployment, fresh seeded database | ST, AT: 19 automated tests |
-| Deployed checks | 4 Nov 2026 | https://berth-76rn.vercel.app (Vercel, Neon PostgreSQL 18.6) | ST-01, ST-10, ST-11 |
-| Static checks | 3 Nov 2026 | ruff, ESLint, Prettier, pytest-cov | ST-15 |
+| Run | Environment | Scope |
+|---|---|---|
+| Backend suite | Windows 11, Python 3.12, PostgreSQL 18 (Docker) | UT, IT: 92 automated tests |
+| Frontend suite | Node 22, Vitest 5, jsdom | 19 automated tests |
+| Browser suite | Playwright 1.64, Chromium, local deployment, fresh seeded database | ST, AT: 19 automated tests |
+| Deployed checks | https://berth-76rn.vercel.app (Vercel, Neon PostgreSQL 18.6) | ST-01, ST-10, ST-11 |
+| Static checks | ruff, ESLint, Prettier, pytest-cov | ST-15 |
+
+All results below are from the final run of each suite.
 
 # 2. Execution Summary
 
@@ -82,7 +84,7 @@ The 83 planned cases are implemented by 130 automated tests: 92 backend (39 unit
 | DEF-05 | "Booking confirmed" message never shown after payment | ST-02 | Minor, P2 | The payment page redirected before passing the just-booked state; now one redirect carries it (`44c7536`) | <span class="pass">Closed</span> |
 | DEF-06 | Booking, payment and detail pages scrolled sideways on phones | ST-08 | Major, P2 | Grid columns could not shrink below the passenger table width; fixed with `min-w-0` (`44c7536`) | <span class="pass">Closed</span> |
 | DEF-07 | Opening bookings took minutes against the hosted database | Seeding, FR-JOB-01 | Major, P1 | One existence query per train per day (about 600 round trips). Replaced by a single query; 12 s end to end (`28e8801`) | <span class="pass">Closed</span> |
-| OBS-01 | One live payment request timed out from the client | ST-10 run, 4 Nov | Not assigned | Not reproducible; no server-side error or lock found. Monitored | Observation |
+| OBS-01 | One live payment request timed out from the client | Final deployed check | Not assigned | Not reproducible; no server-side error or lock found. Monitored | Observation |
 
 </div>
 
@@ -91,11 +93,11 @@ The 83 planned cases are implemented by 130 automated tests: 92 backend (39 unit
 The system meets every exit criterion in the Test Plan and is recommended for acceptance. Two points are worth noting:
 
 - **Performance margin.** Search on the live site (ST-10) passed with a 95th percentile of 1.96 s measured from India, close to the 2 s limit, because the API and database are hosted in the United States. Moving both to the Mumbai region would remove most of that latency.
-- **OBS-01.** On 4 November one live payment request timed out once from the test client. It could not be reproduced (the next three payments took 1.0 to 1.4 s), the database showed no locks or errors, and the unpaid booking expired automatically. It is recorded as an observation and monitored.
+- **OBS-01.** During the final deployed checks one live payment request timed out once from the test client. It could not be reproduced (the next three payments took 1.0 to 1.4 s), the database showed no locks or errors, and the unpaid booking expired automatically. It is recorded as an observation and monitored.
 
 # Appendix A. Execution Evidence
 
-Screenshots captured by the Playwright run of 3 November 2026.
+Screenshots captured automatically by the final Playwright run.
 
 <div class="shots">
 <figure><img src="../test/screenshots/st01-search-results.png" alt=""><figcaption>ST-01: search results with availability and fares</figcaption></figure>

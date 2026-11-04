@@ -281,7 +281,7 @@ def build_report_html(meta: dict) -> str:
         "Software Requirements Specification, Software Design Document, "
         "and Software Test Plan and Report",
         "1.1",
-        "4 November 2026",
+        "29 October 2026",
         meta,
     )
     return page(

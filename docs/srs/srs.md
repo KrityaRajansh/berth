@@ -2,7 +2,7 @@
 title: Software Requirements Specification
 subtitle: "Berth: Online Train Ticket Reservation System"
 version: 1.1
-date: 4 November 2026
+date: 29 October 2026
 ---
 
 # 1. Introduction

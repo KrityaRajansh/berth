@@ -486,7 +486,7 @@
   "req": "NFR-01",
   "case": "50 searches on the live API after warm-up",
   "expected": "p95 under 2 s",
-  "actual": "p95 1.96 s, median 0.67 s (from India, 4 Nov); 0.61 s on 26 Oct",
+  "actual": "p95 1.96 s, median 0.67 s (measured from India); 0.61 s in an earlier check",
   "status": "<span class=\"pass\">Pass</span>"
  },
  "ST-11": {

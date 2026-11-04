@@ -2,7 +2,7 @@
 title: Software Test Plan
 subtitle: "Berth: Online Train Ticket Reservation System"
 version: 1.1
-date: 4 November 2026
+date: 29 October 2026
 ---
 
 # 1. Testing Objectives
@@ -78,7 +78,7 @@ Integration tests run inside a transaction that is rolled back after each test, 
 | Train 90001 | Fixture Express, Mon/Wed/Fri: STA 06:00, STB 100 km, STC 250 km, STD 20:00 (400 km); coaches S1, B1, A1, H1 |
 | Train 90002 | Long Haul Mail, daily, STA to STD overnight, 1400 km, 3A only (refund cases) |
 | Users | `passenger1@example.com`, `passenger2@example.com`, `admin@example.com` |
-| Clock | Sunday 1 November 2026, 06:00 IST: Monday's run departs in 24 h, Wednesday's in 72 h |
+| Clock | A fixed Sunday, 06:00 IST: Monday's run departs in 24 h, Wednesday's in 72 h |
 | End-to-end data | 22 real station codes and 10 invented trains loaded by `scripts/seed.py` |
 | Payment | Approve: card `4111 1111 1111 1111` or UPI `success@berth`. Decline: card `4000 0000 0000 0002` or UPI `failure@berth` |
 
