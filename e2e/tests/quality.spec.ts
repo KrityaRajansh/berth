@@ -4,7 +4,11 @@ import { expect, test, type Page } from "@playwright/test";
 import {
   DELHI,
   MUMBAI,
+  TRAVEL_DATE,
+  adminApi,
   bookAndPay,
+  createSmallTrain,
+  uniqueSuffix,
   evidence,
   fillPassenger,
   hasNoHorizontalScroll,
@@ -78,6 +82,63 @@ test.describe("ST-08 small screens", () => {
     expect(await hasNoHorizontalScroll(page)).toBe(true);
     await evidence(page, "st08-mobile-confirmation");
   });
+});
+
+test("ST-09 twenty parallel payments for the last berth confirm exactly one", async ({
+  playwright,
+}) => {
+  const base = process.env.E2E_BASE_URL ?? "http://localhost:5173";
+  const admin = await adminApi(base);
+  const train = await createSmallTrain(admin, 1);
+  await admin.dispose();
+
+  const user = await playwright.request.newContext({ baseURL: base });
+  const suffix = uniqueSuffix();
+  const registered = await user.post("/api/v1/auth/register", {
+    data: {
+      full_name: "Load Tester",
+      email: `load${suffix}@example.com`,
+      mobile: `97${suffix}11`,
+      password: "Travel123",
+    },
+  });
+  expect(registered.ok()).toBe(true);
+  const results = await (
+    await user.get("/api/v1/trains/search", {
+      params: { from: "NDLS", to: train.station[0], date: TRAVEL_DATE },
+    })
+  ).json();
+  const runId = results[0].run_id;
+
+  const ids: string[] = [];
+  for (let i = 0; i < 20; i++) {
+    const created = await user.post("/api/v1/bookings", {
+      data: {
+        run_id: runId,
+        travel_class: "SL",
+        from_code: "NDLS",
+        to_code: train.station[0],
+        passengers: [{ name: "Racer", age: 30, gender: "M" }],
+      },
+    });
+    ids.push((await created.json()).id);
+  }
+
+  const paid = await Promise.all(
+    ids.map((id) =>
+      user.post(`/api/v1/bookings/${id}/payments`, {
+        data: { method: "card", card_number: "4111111111111111" },
+      }),
+    ),
+  );
+  expect(paid.map((r) => r.status())).toEqual(Array(20).fill(200));
+
+  const statuses = await Promise.all(
+    paid.map(async (r) => (await r.json()).passengers[0].current_status as string),
+  );
+  expect(statuses.filter((s) => s.startsWith("CNF"))).toEqual(["CNF/S1/1/LB"]);
+  expect(statuses.filter((s) => s.startsWith("WL"))).toHaveLength(19);
+  await user.dispose();
 });
 
 test("ST-12 hostile input is rejected safely", async ({ page, request }) => {

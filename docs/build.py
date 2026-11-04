@@ -20,6 +20,8 @@ from __future__ import annotations
 
 import hashlib
 import html
+import json
+import re
 import shutil
 import subprocess
 import sys
@@ -29,6 +31,7 @@ from pathlib import Path
 
 import markdown
 import yaml
+from markdown.extensions.toc import slugify as toc_slugify
 
 DOCS_DIR = Path(__file__).resolve().parent
 BUILD_DIR = DOCS_DIR / "build"
@@ -38,7 +41,20 @@ TOOLS_DIR = DOCS_DIR / "tools"
 DOCUMENTS = {
     "srs": DOCS_DIR / "srs" / "srs.md",
     "sdd": DOCS_DIR / "sdd" / "sdd.md",
-    "test": DOCS_DIR / "test" / "test-plan-report.md",
+    "test-plan": DOCS_DIR / "test" / "test-plan.md",
+    "test-report": DOCS_DIR / "test" / "test-report.md",
+    # The submission: overview plus all four documents in one PDF.
+    "report": None,
+}
+
+# Test cases live in one data file so the plan and the report always agree.
+CASES_FILE = DOCS_DIR / "test" / "results" / "cases.json"
+CASE_MARKER = re.compile(r"<!-- cases:(UT|IT|ST|AT):(plan|report) -->")
+CASE_TITLES = {
+    "UT": "Unit test cases",
+    "IT": "Integration test cases",
+    "ST": "System test cases",
+    "AT": "Acceptance test cases",
 }
 
 PLANTUML_VERSION = "1.2026.7"
@@ -83,6 +99,11 @@ def plantuml_jar() -> Path:
 
 
 def render_diagrams() -> None:
+    out_dir = BUILD_DIR / "diagrams"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    # Hand-drawn SVG figures and generated charts are used as they are.
+    for svg in DIAGRAMS_DIR.glob("*.svg"):
+        shutil.copy(svg, out_dir / svg.name)
     sources = sorted(p for p in DIAGRAMS_DIR.glob("*.puml") if not p.name.startswith("_"))
     if not sources:
         return
@@ -102,40 +123,76 @@ def render_diagrams() -> None:
     print(f"diagrams: {len(sources)} rendered")
 
 
+def case_table(level: str, kind: str) -> str:
+    cases = json.loads(CASES_FILE.read_text(encoding="utf-8"))
+    rows = [(cid, c) for cid, c in cases.items() if cid.startswith(level)]
+    if kind == "plan":
+        header = "| ID | Req. | Test case and input | Expected result |\n|---|---|---|---|"
+        lines = [f"| {cid} | {c['req']} | {c['case']} | {c['expected']} |" for cid, c in rows]
+        css = "tc plan"
+    else:
+        header = (
+            "| ID | Test case | Expected result | Actual result | Status |\n|---|---|---|---|---|"
+        )
+        lines = [
+            f"| {cid} | {c['case']} | {c['expected']} | {c['actual']} | {c['status']} |"
+            for cid, c in rows
+        ]
+        css = "tc result"
+    title = f"**{CASE_TITLES[level]}** ({len(rows)})"
+    table = "\n".join([header, *lines])
+    return f'{title}\n\n<div class="{css}" markdown="1">\n\n{table}\n\n</div>'
+
+
+def expand_cases(body: str) -> str:
+    return CASE_MARKER.sub(lambda m: case_table(m.group(1), m.group(2)), body)
+
+
 def split_front_matter(text: str) -> tuple[dict, str]:
     if not text.startswith("---"):
         return {}, text
     _, front, body = text.split("---", 2)
-    return yaml.safe_load(front) or {}, body
+    return yaml.safe_load(front) or {}, expand_cases(body)
 
 
-def render_cover(doc_meta: dict, meta: dict) -> str:
+def render_cover(title: str, subtitle: str, version: str, date: str, meta: dict) -> str:
     rows = "\n".join(
         f"<tr><td>{html.escape(m['name'])}</td><td>{html.escape(m['reg'])}</td></tr>"
         for m in meta["members"]
     )
+    links = "".join(
+        f"<dt>{label}</dt><dd>{html.escape(meta[key])}</dd>"
+        for label, key in (("Live system", "live_url"), ("Source code", "repo_url"))
+        if meta.get(key)
+    )
     return f"""
 <section class="cover">
-  <p class="course">{html.escape(meta['course'])}</p>
-  <h1 class="doc-title">{html.escape(doc_meta['title'])}</h1>
-  <p class="doc-subtitle">{html.escape(doc_meta.get('subtitle', ''))}</p>
-  <dl class="facts">
-    <dt>Group</dt><dd>{meta['group_number']}</dd>
-    <dt>Assignment</dt><dd>{meta['assignment_number']}: {html.escape(meta['assignment_title'])}</dd>
-    <dt>Version</dt><dd>{html.escape(str(doc_meta.get('version', '')))}</dd>
-    <dt>Date</dt><dd>{html.escape(str(doc_meta.get('date', '')))}</dd>
-  </dl>
-  <table class="members">
-    <thead><tr><th>Name</th><th>Registration no.</th></tr></thead>
-    <tbody>{rows}</tbody>
-  </table>
+  <div class="cover-band">
+    <p class="course">{html.escape(meta['course'])} &middot; Assignment {meta['assignment_number']}</p>
+    <h1 class="doc-title">{html.escape(title)}</h1>
+    <p class="doc-subtitle">{html.escape(subtitle)}</p>
+    <p class="product">{html.escape(meta['project'])}</p>
+  </div>
+  <div class="cover-body">
+    <dl class="facts">
+      <dt>Group</dt><dd>{meta['group_number']}</dd>
+      <dt>Assignment</dt><dd>{meta['assignment_number']}: {html.escape(meta['assignment_title'])}</dd>
+      <dt>Version</dt><dd>{html.escape(str(version))}</dd>
+      <dt>Date</dt><dd>{html.escape(str(date))}</dd>
+      {links}
+    </dl>
+    <table class="members">
+      <thead><tr><th>Group member</th><th>Registration no.</th></tr></thead>
+      <tbody>{rows}</tbody>
+    </table>
+  </div>
 </section>
 """
 
 
-def render_toc(toc_tokens: list[dict]) -> str:
+def render_toc(toc_tokens: list[dict], max_depth: int = 2) -> str:
     def items(tokens: list[dict], depth: int) -> str:
-        if not tokens or depth > 2:
+        if not tokens or depth > max_depth:
             return ""
         lis = []
         for t in tokens:
@@ -146,30 +203,93 @@ def render_toc(toc_tokens: list[dict]) -> str:
     return f'<nav class="toc"><h2>Contents</h2>{items(toc_tokens, 1)}</nav>'
 
 
-def build_html(source: Path, meta: dict) -> str:
-    doc_meta, body = split_front_matter(source.read_text(encoding="utf-8"))
-    md = markdown.Markdown(
+def convert(id_prefix: str = "") -> markdown.Markdown:
+    """A Markdown converter; the prefix keeps heading ids unique when documents are combined."""
+
+    def slug(value: str, separator: str) -> str:
+        return id_prefix + toc_slugify(value, separator)
+
+    return markdown.Markdown(
         extensions=["tables", "fenced_code", "attr_list", "sane_lists", "toc", "md_in_html"],
-        extension_configs={"toc": {"permalink": False}},
+        extension_configs={"toc": {"permalink": False, "slugify": slug}},
     )
-    content = md.convert(body)
+
+
+def page(title: str, footer: str, body: str) -> str:
     css = (DOCS_DIR / "style.css").read_text(encoding="utf-8")
-    footer_left = f"{meta['project']} | {doc_meta['title']} v{doc_meta.get('version', '')}"
-    css = css.replace("__FOOTER_LEFT__", footer_left.replace('"', '\\"'))
+    css = css.replace("__FOOTER_LEFT__", footer.replace('"', '\\"'))
     return f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>{html.escape(doc_meta['title'])}</title>
+<title>{html.escape(title)}</title>
 <style>{css}</style>
 </head>
 <body>
-{render_cover(doc_meta, meta)}
-{render_toc(md.toc_tokens)}
-<main>{content}</main>
+{body}
 </body>
 </html>
 """
+
+
+def build_html(source: Path, meta: dict) -> str:
+    doc_meta, body = split_front_matter(source.read_text(encoding="utf-8"))
+    md = convert()
+    content = md.convert(body)
+    version = str(doc_meta.get("version", ""))
+    cover = render_cover(
+        doc_meta["title"], doc_meta.get("subtitle", ""), version, doc_meta.get("date", ""), meta
+    )
+    return page(
+        doc_meta["title"],
+        f"{meta['project']} | {doc_meta['title']} v{version}",
+        f"{cover}\n{render_toc(md.toc_tokens)}\n<main>{content}</main>",
+    )
+
+
+REPORT_PARTS = [
+    ("", "", DOCS_DIR / "report" / "overview.md"),
+    ("Part I", "Software Requirements Specification", DOCS_DIR / "srs" / "srs.md"),
+    ("Part II", "Software Design Document", DOCS_DIR / "sdd" / "sdd.md"),
+    ("Part III", "Software Test Plan", DOCS_DIR / "test" / "test-plan.md"),
+    ("Part IV", "Software Test Report", DOCS_DIR / "test" / "test-report.md"),
+]
+
+
+def build_report_html(meta: dict) -> str:
+    """One document with the overview and the three parts, as the brief asks for one report."""
+    sections, toc = [], []
+    for index, (label, title, source) in enumerate(REPORT_PARTS):
+        doc_meta, body = split_front_matter(source.read_text(encoding="utf-8"))
+        md = convert(id_prefix=f"p{index}-")
+        content = md.convert(body)
+        if label:
+            anchor = f"part-{index}"
+            sections.append(
+                f'<section class="part-divider" id="{anchor}">'
+                f'<p class="part-no">{label}</p><h1>{html.escape(title)}</h1>'
+                f'<p class="part-meta">Version {doc_meta.get("version", "")} &middot; '
+                f'{doc_meta.get("date", "")}</p></section>'
+            )
+            toc.append({"id": anchor, "name": f"{label}: {title}", "children": md.toc_tokens})
+        else:
+            toc.extend(md.toc_tokens)
+        sections.append(content)
+
+    cover = render_cover(
+        meta["assignment_title"],
+        "Software Requirements Specification, Software Design Document, "
+        "and Software Test Plan and Report",
+        "1.1",
+        "4 November 2026",
+        meta,
+    )
+    return page(
+        f"{meta['project']}: {meta['assignment_title']}",
+        f"{meta['project']} | Group {meta['group_number']} | CSC702 Software Engineering Report",
+        f'{cover}\n<div class="report-toc">{render_toc(toc)}</div>\n'
+        f"<main>{''.join(sections)}</main>",
+    )
 
 
 def print_pdf(browser: str, html_file: Path, pdf_file: Path) -> None:
@@ -207,7 +327,8 @@ def main(selected: list[str]) -> None:
         source = DOCUMENTS[name]
         html_file = BUILD_DIR / f"{name}.html"
         pdf_file = DIST_DIR / f"{name}.pdf"
-        html_file.write_text(build_html(source, meta), encoding="utf-8")
+        document = build_report_html(meta) if source is None else build_html(source, meta)
+        html_file.write_text(document, encoding="utf-8")
         print_pdf(browser, html_file, pdf_file)
         print(f"{name}: {pdf_file.relative_to(DOCS_DIR.parent)}")
 

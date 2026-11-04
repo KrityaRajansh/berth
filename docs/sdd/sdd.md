@@ -1,8 +1,8 @@
 ---
 title: Software Design Document
 subtitle: "Berth: Online Train Ticket Reservation System"
-version: 1.0
-date: 26 October 2026
+version: 1.1
+date: 4 November 2026
 ---
 
 # 1. Introduction
@@ -165,7 +165,12 @@ Two rules are also enforced at request time, so correctness does not depend on t
 
 # 4. Database Design
 
-A full database design is not required by the brief; this section summarises the physical choices that matter to correctness. The entities and their relationships appear in the domain class diagram (Figure 5.1). The schema is created and versioned through Alembic migrations.
+A full database design is not required by the brief; this section summarises the physical choices that matter to correctness. Figure 4.1 shows the tables and their relationships in crow's-foot notation. The schema is created and versioned through Alembic migrations.
+
+<figure>
+<img src="diagrams/erd.svg" alt="Entity relationship diagram">
+<figcaption>Figure 4.1: Entity relationship diagram (key columns only)</figcaption>
+</figure>
 
 | Table | Key constraints |
 |---|---|
@@ -257,6 +262,15 @@ The use cases are split into two diagrams for readability: services used by gues
 | Alternative flows | 4a. All travellers cancelled: booking becomes `CANCELLED`. 4b. Chart already prepared: request is refused. |
 | Postconditions | Selected travellers are `CAN`; refund recorded; eligible waitlisted travellers confirmed |
 | Requirements | FR-CAN-01 to 05, FR-WL-01 to 03 |
+
+## 6.3 Activity diagram: Book ticket
+
+Figure 6.3 shows the same use case as a flow across the passenger, the system and the payment gateway, including every exit where the passenger is not charged.
+
+<figure>
+<img src="diagrams/activity-booking.svg" alt="Booking activity diagram">
+<figcaption>Figure 6.3: Booking flow with decision points</figcaption>
+</figure>
 
 # 7. Sequence Diagrams
 

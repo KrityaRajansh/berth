@@ -1,0 +1,583 @@
+{
+ "UT-01": {
+  "req": "BR-04",
+  "case": "Fare, SL, 400 km",
+  "expected": "Base ₹180, reservation ₹20, GST ₹0, total ₹200",
+  "actual": "₹180 + ₹20 + ₹0 = ₹200",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-02": {
+  "req": "BR-04",
+  "case": "Fare, 3A, 400 km",
+  "expected": "Base ₹480, reservation ₹40, GST ₹26, total ₹546",
+  "actual": "₹480 + ₹40 + ₹26 = ₹546",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-03": {
+  "req": "BR-04",
+  "case": "Fare, 2A, 250 km (below minimum)",
+  "expected": "Base ₹450 (minimum), total ₹525",
+  "actual": "Minimum applied; total ₹525",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-04": {
+  "req": "BR-04",
+  "case": "Fare, 1A, 250 km",
+  "expected": "Base ₹800 (minimum), GST ₹43, total ₹903",
+  "actual": "Total ₹903",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-05": {
+  "req": "BR-06",
+  "case": "Refund, CNF, 3A ₹1806, 72 h before",
+  "expected": "Refund ₹1626.00 (flat fee ₹180)",
+  "actual": "₹1626.00",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-06": {
+  "req": "BR-06",
+  "case": "Refund, CNF, 3A ₹1806, exactly 48 h",
+  "expected": "25% slab: refund ₹1354.50",
+  "actual": "₹1354.50",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-07": {
+  "req": "BR-06",
+  "case": "Refund, CNF, 3A ₹1806, exactly 12 h",
+  "expected": "25% slab: refund ₹1354.50",
+  "actual": "₹1354.50",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-08": {
+  "req": "BR-06",
+  "case": "Refund, CNF, 3A ₹1806, 6 h before",
+  "expected": "50% slab: refund ₹903.00",
+  "actual": "₹903.00",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-09": {
+  "req": "BR-06",
+  "case": "Refund, CNF, SL ₹200, 24 h before",
+  "expected": "Flat fee floor: refund ₹80.00",
+  "actual": "₹80.00",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-10": {
+  "req": "BR-06",
+  "case": "Refund, WL, fare ₹546",
+  "expected": "Refund ₹486.00",
+  "actual": "₹486.00",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-11": {
+  "req": "A-02",
+  "case": "SL berth types 1 to 8, berth 72",
+  "expected": "LB MB UB LB MB UB SL SU; 72 is SU",
+  "actual": "As expected; 72 berths",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-12": {
+  "req": "A-02",
+  "case": "2A berth 5; 3A coach size",
+  "expected": "SL; 64 berths",
+  "actual": "SL; 64",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-13": {
+  "req": "BR-10",
+  "case": "Overlap [1,3)/[3,4) and [1,3)/[2,4)",
+  "expected": "No; yes",
+  "actual": "No; yes",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-14": {
+  "req": "FR-BKG-05",
+  "case": "6 passengers, 4 free berths",
+  "expected": "4 CNF distinct berths, 2 WL",
+  "actual": "4 distinct berths, 2 WL",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-15": {
+  "req": "FR-BKG-09",
+  "case": "Prefers LB; free MB and LB",
+  "expected": "LB allocated",
+  "actual": "Berth 4 (LB)",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-16": {
+  "req": "FR-BKG-08",
+  "case": "Confirm-only, 3 passengers, 2 berths",
+  "expected": "Rejected",
+  "actual": "CONFIRMATION_UNAVAILABLE",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-17": {
+  "req": "BR-05",
+  "case": "2 passengers, 0 berths, 19 on waitlist",
+  "expected": "Rejected (would be 21)",
+  "actual": "NOT_AVAILABLE",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-18": {
+  "req": "FR-TKT-01",
+  "case": "Generate 10,000 PNRs",
+  "expected": "10 digits, no leading 0, unique",
+  "actual": "All valid and unique",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-19": {
+  "req": "FR-BKG-02, 03",
+  "case": "Invalid name, age 0/121, gender X, 7 passengers, script tag",
+  "expected": "Each rejected; 6 valid accepted",
+  "actual": "Each rejected on its field; 6 accepted",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-20": {
+  "req": "NFR-05",
+  "case": "Hash and verify \"Secret@123\"",
+  "expected": "`$2b$` hash; wrong case fails",
+  "actual": "As expected",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-21": {
+  "req": "FR-SRCH-03",
+  "case": "Mon/Wed/Fri train on Mon and Tue",
+  "expected": "True; false",
+  "actual": "True; false",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-22": {
+  "req": "BR-02",
+  "case": "Chart cut-off for 10 Nov 2026",
+  "expected": "9 Nov 2026 18:00 IST",
+  "actual": "9 Nov 18:00 IST",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-23": {
+  "req": "FR-TKT-05",
+  "case": "Mask \"Rahul Sharma\"",
+  "expected": "\"Ra*** Sh****\"",
+  "actual": "\"Ra*** Sh****\"",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "UT-24": {
+  "req": "SR-04",
+  "case": "Mock gateway cards, UPI IDs, refund",
+  "expected": "Approve/decline as listed",
+  "actual": "As listed, with references",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-01": {
+  "req": "FR-AUTH-01, 02",
+  "case": "Register; register again",
+  "expected": "201; then 409",
+  "actual": "201; 409 ACCOUNT_EXISTS",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-02": {
+  "req": "FR-AUTH-03, 04",
+  "case": "Login right/wrong; logout",
+  "expected": "200 + cookie; 401; cookie cleared",
+  "actual": "As expected (after DEF-01 fix)",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-03": {
+  "req": "NFR-10",
+  "case": "Six failed logins in a minute",
+  "expected": "401 x5, then 429",
+  "actual": "401 x5, 429",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-04": {
+  "req": "FR-AUTH-05, NFR-08",
+  "case": "No session; passenger on admin API",
+  "expected": "401; 403",
+  "actual": "401; 403",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-05": {
+  "req": "FR-SRCH-01",
+  "case": "`GET /stations?q=bra`",
+  "expected": "STB Bravo",
+  "actual": "[STB]",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-06": {
+  "req": "FR-SRCH-02 to 04",
+  "case": "STB to STD on Wednesday; reverse",
+  "expected": "90001, 300 km, times; reverse empty",
+  "actual": "08:05 to 20:00, 11h 55m, 300 km; []",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-07": {
+  "req": "FR-SRCH-03",
+  "case": "STA to STD on Tuesday",
+  "expected": "90001 not listed",
+  "actual": "Only 90002 (daily) listed",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-08": {
+  "req": "FR-SRCH-05",
+  "case": "Same station; past; 61 days",
+  "expected": "422 each",
+  "actual": "422 SAME_STATION, DATE_IN_PAST, DATE_BEYOND_ARP",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-09": {
+  "req": "FR-AVL-02, BR-10",
+  "case": "2 berths booked STA to STB",
+  "expected": "STB to STD AVAILABLE 2; STA to STC WL",
+  "actual": "AVAILABLE 2; WAITLIST 1",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-10": {
+  "req": "FR-BKG-01, 04",
+  "case": "2 passengers SL STA to STD",
+  "expected": "201, PENDING_PAYMENT, ₹400, 15 min",
+  "actual": "As expected, times in IST (after DEF-02 fix)",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-11": {
+  "req": "FR-PAY-02, FR-TKT-01",
+  "case": "Pay with approve card",
+  "expected": "BOOKED, 10-digit PNR, 2 CNF in S1",
+  "actual": "BOOKED, PNR, 2 distinct S1 berths",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-12": {
+  "req": "FR-PAY-03",
+  "case": "Pay with decline card",
+  "expected": "402; still pending; 1 FAILED payment",
+  "actual": "As expected",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-13": {
+  "req": "FR-PAY-03",
+  "case": "Retry with approve card",
+  "expected": "200 BOOKED",
+  "actual": "200 BOOKED",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-14": {
+  "req": "FR-PAY-05",
+  "case": "Same pay request twice",
+  "expected": "Same response; 1 SUCCESS payment",
+  "actual": "Identical; 1 payment",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-15": {
+  "req": "BR-08",
+  "case": "Pay after 16 minutes",
+  "expected": "410; EXPIRED; no charge",
+  "actual": "As expected (after DEF-03 fix)",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-16": {
+  "req": "FR-BKG-05, FR-WL-01",
+  "case": "3 passengers, 2 berths",
+  "expected": "2 CNF, third WL 1",
+  "actual": "CNF, CNF, WL 1",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-17": {
+  "req": "FR-BKG-06",
+  "case": "Berths and 20 WL full; pay",
+  "expected": "409; FAILED; no payment",
+  "actual": "409 NOT_AVAILABLE; 0 payments",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-18": {
+  "req": "NFR-08",
+  "case": "Other user's booking and ticket",
+  "expected": "404 both",
+  "actual": "404, 404",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-19": {
+  "req": "FR-CAN-02",
+  "case": "Quote, CNF SL ₹200, 72 h",
+  "expected": "Refund ₹80.00",
+  "actual": "₹80.00",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-20": {
+  "req": "FR-CAN-01, 03",
+  "case": "Cancel 1 of 2 passengers",
+  "expected": "One CAN with refund; booking BOOKED",
+  "actual": "As expected; refund recorded",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-21": {
+  "req": "FR-WL-02, 03",
+  "case": "Cancel a CNF with WL 1, WL 2 waiting",
+  "expected": "WL 1 gets the berth; WL 2 becomes WL 1",
+  "actual": "As expected",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-22": {
+  "req": "FR-WL-02, BR-10",
+  "case": "Freed berth fits only the short segment",
+  "expected": "Long-segment WL stays; short one CNF",
+  "actual": "As expected",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-23": {
+  "req": "FR-CAN-05",
+  "case": "Cancel all passengers",
+  "expected": "Booking CANCELLED",
+  "actual": "CANCELLED, can_cancel false",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-24": {
+  "req": "FR-CAN-04",
+  "case": "Cancel after chart cut-off",
+  "expected": "409; unchanged",
+  "actual": "409 CANCELLATION_CLOSED",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-25": {
+  "req": "FR-TKT-03",
+  "case": "Download ticket",
+  "expected": "PDF with PNR and names",
+  "actual": "PDF text has PNR and both names (after DEF-04 fix)",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-26": {
+  "req": "FR-TKT-05",
+  "case": "Public PNR status",
+  "expected": "200; names masked",
+  "actual": "\"As** Ra*\"; 422 and 404 for bad PNRs",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-27": {
+  "req": "FR-WL-04, FR-JOB-02",
+  "case": "Chart job twice",
+  "expected": "WL cancelled with full refund; second run 0",
+  "actual": "Refund ₹400 (CHART_PREPARED); 3 runs, then 0",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-28": {
+  "req": "FR-JOB-01, 05",
+  "case": "Run generation twice",
+  "expected": "Running days only; second run 0",
+  "actual": "Mon/Wed/Fri + daily created; then 0",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-29": {
+  "req": "FR-JOB-03",
+  "case": "Completion before/after arrival",
+  "expected": "0, then run and bookings COMPLETED",
+  "actual": "0; 1; booking COMPLETED",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-30": {
+  "req": "FR-JOB-04",
+  "case": "Expiry job, 20-minute-old pending",
+  "expected": "EXPIRED",
+  "actual": "1 expired",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-31": {
+  "req": "SR-05",
+  "case": "Cron endpoint without/with wrong token",
+  "expected": "401; job not run",
+  "actual": "401, 401; correct token runs 4 jobs",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-32": {
+  "req": "FR-ADM-05",
+  "case": "Admin cancels run with CNF and WL",
+  "expected": "All refunded in full; run CANCELLED",
+  "actual": "₹200 + ₹200 refunded; second cancel 409",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-33": {
+  "req": "NFR-03",
+  "case": "Overlapping CNF berth inserted directly",
+  "expected": "Rejected by constraint",
+  "actual": "IntegrityError `ex_passenger_berth_overlap`; touching segments allowed",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-34": {
+  "req": "FR-ADM-01",
+  "case": "Duplicate station code",
+  "expected": "409",
+  "actual": "409 STATION_EXISTS",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-35": {
+  "req": "FR-ADM-03",
+  "case": "Route with 1 stop; distances out of order",
+  "expected": "422 both",
+  "actual": "ROUTE_TOO_SHORT, ROUTE_DISTANCE",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "IT-36": {
+  "req": "NFR-03, FR-BKG-07",
+  "case": "10 parallel payments, last berth",
+  "expected": "1 CNF, 9 WL, no duplicate",
+  "actual": "1 CNF (S1/1), 9 WL with sequences 1 to 9; passed 6 of 6 repeats",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-01": {
+  "req": "UR-01, 02",
+  "case": "Guest searches New Delhi to Mumbai Central",
+  "expected": "Trains, times, availability, fares",
+  "actual": "22401 at 16:30, all classes Available; also passed on the live site",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-02": {
+  "req": "UR-05 to 07",
+  "case": "Register, book 2, pay, download ticket",
+  "expected": "Confirmation with PNR, PDF downloads",
+  "actual": "PNR shown, both CNF in B1, PDF downloaded (after DEF-05 fix)",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-03": {
+  "req": "UR-08, 09",
+  "case": "My bookings; cancel one passenger",
+  "expected": "Listed; refund shown; status updates",
+  "actual": "As expected",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-04": {
+  "req": "FR-PAY-03",
+  "case": "Decline, then approve",
+  "expected": "Clear error, then confirmed",
+  "actual": "\"Declined by the issuing bank\", then PNR",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-05": {
+  "req": "UR-03",
+  "case": "Guest checks PNR",
+  "expected": "Statuses; names masked",
+  "actual": "\"Me*** Iy**\", \"Ka*** Iy**\"",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-06": {
+  "req": "UR-11, 12",
+  "case": "Admin adds station, train, route, coaches, runs",
+  "expected": "New train appears in search",
+  "actual": "\"Available 48\" in search",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-07": {
+  "req": "UR-13",
+  "case": "Admin opens passenger chart",
+  "expected": "Passengers with berth and segment",
+  "actual": "Row with 2A berth, NDLS - MMCT",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-08": {
+  "req": "NFR-12",
+  "case": "Booking flow at 360 px",
+  "expected": "No horizontal scroll",
+  "actual": "No sideways scroll on any step (after DEF-06 fix)",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-09": {
+  "req": "NFR-03",
+  "case": "20 parallel payments, 1 berth left",
+  "expected": "Exactly 1 CNF",
+  "actual": "20 x HTTP 200: 1 CNF/S1/1/LB, 19 WL (local deployment)",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-10": {
+  "req": "NFR-01",
+  "case": "50 searches on the live API after warm-up",
+  "expected": "p95 under 2 s",
+  "actual": "p95 1.96 s, median 0.67 s (from India, 4 Nov); 0.61 s on 26 Oct",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-11": {
+  "req": "NFR-05, 06",
+  "case": "Stored password; session cookie",
+  "expected": "bcrypt hash; HttpOnly, Secure, SameSite",
+  "actual": "`$2b$` hash; HttpOnly; Secure; SameSite=Lax; 24 h",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-12": {
+  "req": "NFR-07",
+  "case": "`' OR 1=1 --` in search; script tag as name",
+  "expected": "Empty result; rejected",
+  "actual": "`[]` with 200; name rejected by validation",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-13": {
+  "req": "NFR-13",
+  "case": "axe scan of 7 key pages",
+  "expected": "No serious or critical violations",
+  "actual": "0 on all 7 pages",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-14": {
+  "req": "NFR-11",
+  "case": "Screens from results to confirmation",
+  "expected": "5 or fewer",
+  "actual": "4: results, passengers, payment, confirmation",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "ST-15": {
+  "req": "NFR-15, 16",
+  "case": "Lint, format and coverage checks",
+  "expected": "All pass; coverage at least 80%",
+  "actual": "ruff, ESLint, Prettier clean; coverage 95%",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "AT-01": {
+  "req": "UR-01, 02, 04",
+  "case": "New visitor compares classes and registers",
+  "expected": "Finds train, sees fares, registers unaided",
+  "actual": "All four classes with fares (SL ₹643); account created",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "AT-02": {
+  "req": "UR-05 to 07",
+  "case": "Family of four books and prints",
+  "expected": "Confirmed in one session; ticket for all four",
+  "actual": "4 CNF in one booking; PDF downloaded",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "AT-03": {
+  "req": "UR-06, 10",
+  "case": "Waitlisted on a full train; another passenger cancels",
+  "expected": "WL, then CNF automatically",
+  "actual": "WL 1, then CNF/S1/1 after the cancellation",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "AT-04": {
+  "req": "UR-08, 09",
+  "case": "Cancel one traveller",
+  "expected": "Refund matches published rules",
+  "actual": "Quote ₹523 = ₹643 minus ₹120 flat fee",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "AT-05": {
+  "req": "UR-03",
+  "case": "Relative checks a PNR without an account",
+  "expected": "Status visible, names masked",
+  "actual": "\"Ki*** Ra*\", Booked, not logged in",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "AT-06": {
+  "req": "UR-11, 12",
+  "case": "Admin adds a train and opens bookings",
+  "expected": "Bookable without technical help",
+  "actual": "New train shows \"Available 72\"",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "AT-07": {
+  "req": "UR-13",
+  "case": "Admin checks who is travelling",
+  "expected": "Chart matches bookings",
+  "actual": "Passenger listed in H1 with berth",
+  "status": "<span class=\"pass\">Pass</span>"
+ },
+ "AT-08": {
+  "req": "UR-14",
+  "case": "Admin cancels a train run",
+  "expected": "Every passenger cancelled, full refund",
+  "actual": "Booking Cancelled, all three refunded",
+  "status": "<span class=\"pass\">Pass</span>"
+ }
+}

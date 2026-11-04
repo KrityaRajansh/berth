@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="19" failures="0" errors="0" time="0.4881287">
+    <testsuite name="src/features/search/SearchPage.test.tsx" timestamp="2026-11-03T07:20:14.086Z" hostname="KRITYA" tests="4" failures="0" errors="0" skipped="0" time="0.4216236">
+        <testcase classname="src/features/search/SearchPage.test.tsx" name="validateSearch &gt; accepts a complete search" time="0.0055447">
+        </testcase>
+        <testcase classname="src/features/search/SearchPage.test.tsx" name="validateSearch &gt; requires both stations and different ones" time="0.0023538">
+        </testcase>
+        <testcase classname="src/features/search/SearchPage.test.tsx" name="validateSearch &gt; limits the date to the reservation window" time="0.0009158">
+        </testcase>
+        <testcase classname="src/features/search/SearchPage.test.tsx" name="SearchPage &gt; shows the form and reports missing stations on submit" time="0.409406">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/validation.test.ts" timestamp="2026-11-03T07:20:14.121Z" hostname="KRITYA" tests="10" failures="0" errors="0" skipped="0" time="0.0106096">
+        <testcase classname="src/features/validation.test.ts" name="validatePassenger &gt; accepts valid details" time="0.0030839">
+        </testcase>
+        <testcase classname="src/features/validation.test.ts" name="validatePassenger &gt; rejects an invalid name" time="0.0006514">
+        </testcase>
+        <testcase classname="src/features/validation.test.ts" name="validatePassenger &gt; rejects an invalid name" time="0.0005746">
+        </testcase>
+        <testcase classname="src/features/validation.test.ts" name="validatePassenger &gt; rejects an invalid age" time="0.0004622">
+        </testcase>
+        <testcase classname="src/features/validation.test.ts" name="validatePassenger &gt; rejects an invalid age" time="0.0001703">
+        </testcase>
+        <testcase classname="src/features/validation.test.ts" name="validatePassenger &gt; rejects an invalid gender" time="0.0002427">
+        </testcase>
+        <testcase classname="src/features/validation.test.ts" name="validateRegistration &gt; accepts a valid form" time="0.0004534">
+        </testcase>
+        <testcase classname="src/features/validation.test.ts" name="validateRegistration &gt; checks mobile, password strength and confirmation" time="0.0005155">
+        </testcase>
+        <testcase classname="src/features/validation.test.ts" name="safeNext &gt; only allows paths on this site after login" time="0.0009281">
+        </testcase>
+        <testcase classname="src/features/validation.test.ts" name="statusTone &gt; colours ticket statuses" time="0.0004155">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/format.test.ts" timestamp="2026-11-03T07:20:14.128Z" hostname="KRITYA" tests="5" failures="0" errors="0" skipped="0" time="0.0558955">
+        <testcase classname="src/lib/format.test.ts" name="format helpers &gt; formats paise as rupees, showing paise only when present" time="0.0424146">
+        </testcase>
+        <testcase classname="src/lib/format.test.ts" name="format helpers &gt; shows times and dates in IST regardless of the browser&apos;s zone" time="0.0069779">
+        </testcase>
+        <testcase classname="src/lib/format.test.ts" name="format helpers &gt; formats durations" time="0.0003446">
+        </testcase>
+        <testcase classname="src/lib/format.test.ts" name="format helpers &gt; does date arithmetic across months" time="0.0007001">
+        </testcase>
+        <testcase classname="src/lib/format.test.ts" name="format helpers &gt; compares calendar days in IST" time="0.0008081">
+        </testcase>
+    </testsuite>
+</testsuites>

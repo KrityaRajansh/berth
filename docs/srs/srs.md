@@ -1,8 +1,8 @@
 ---
 title: Software Requirements Specification
 subtitle: "Berth: Online Train Ticket Reservation System"
-version: 1.0
-date: 26 October 2026
+version: 1.1
+date: 4 November 2026
 ---
 
 # 1. Introduction
@@ -71,6 +71,13 @@ The problem is therefore to build a system that lets passengers search, book, pa
 
 # 4. Scope of the System
 
+Figure 4.1 shows Berth's boundary: the three user classes, the two external systems it depends on, and its database.
+
+<figure>
+<img src="diagrams/context.svg" alt="System context diagram">
+<figcaption>Figure 4.1: System context</figcaption>
+</figure>
+
 ## 4.1 In scope
 
 - Passenger registration, login and profile.
@@ -106,7 +113,12 @@ The problem is therefore to build a system that lets passengers search, book, pa
 
 # 5. Functional Requirements
 
-Priority uses MoSCoW: **M** = Must, **S** = Should, **C** = Could.
+The functional requirements are grouped into ten areas (Figure 5.1). Priority uses MoSCoW: **M** = Must, **S** = Should, **C** = Could.
+
+<figure>
+<img src="diagrams/features.svg" alt="Functional areas">
+<figcaption>Figure 5.1: Functional areas and their requirement prefixes</figcaption>
+</figure>
 
 ## 5.1 Accounts and authentication (AUTH)
 

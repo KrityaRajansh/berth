@@ -1,0 +1,50 @@
+@startuml activity-booking
+!include _style.iuml
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #4A4A4A
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityDiamondBorderColor #4A4A4A
+skinparam swimlaneBorderColor #8A8A8A
+skinparam swimlaneTitleFontStyle bold
+skinparam swimlaneWidth same
+
+|Passenger|
+start
+:Search trains for a date;
+:Choose train and class;
+if (Logged in?) then (yes)
+else (no)
+  :Log in or register;
+endif
+:Enter 1 to 6 passengers;
+|System|
+:Validate details, show fare;
+:Create booking\nPENDING_PAYMENT, 15 min;
+|Passenger|
+:Enter card or UPI;
+|System|
+:Lock run class, then booking;
+if (Window open and\nchart not prepared?) then (yes)
+else (no)
+  :Expire or fail booking\n(nothing charged);
+  stop
+endif
+:Plan berths for the segment;
+if (Berths + waitlist fit\nall passengers?) then (yes)
+else (no)
+  :Fail booking\n(nothing charged);
+  stop
+endif
+|Payment gateway|
+:Charge amount;
+|System|
+if (Approved?) then (yes)
+  :Confirm berths or assign WL,\nassign PNR, status BOOKED;
+else (no)
+  :Record failed payment,\nbooking stays pending\nso the passenger can retry;
+  stop
+endif
+|Passenger|
+:View confirmation,\ndownload e-ticket;
+stop
+@enduml

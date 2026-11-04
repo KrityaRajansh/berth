@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, request as playwrightRequest, type APIRequestContext, type Page } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -97,6 +97,54 @@ export async function bookAndPay(
   await expect(page.getByRole("heading", { name: "Payment" })).toBeVisible();
   await page.getByLabel("Card number").fill(card);
   await page.getByRole("button", { name: /^Pay / }).click();
+}
+
+/** An API client logged in as the administrator, for test setup. */
+export async function adminApi(baseURL: string): Promise<APIRequestContext> {
+  const api = await playwrightRequest.newContext({ baseURL });
+  const login = await api.post("/api/v1/auth/login", { data: ADMIN });
+  expect(login.ok()).toBe(true);
+  return api;
+}
+
+/**
+ * Creates a small daily train from New Delhi to a new station, with one Sleeper coach
+ * of `berths` berths, and opens bookings. Used where a scenario needs a nearly full train.
+ */
+export async function createSmallTrain(api: APIRequestContext, berths: number) {
+  const suffix = uniqueSuffix();
+  const code = `Y${[...suffix.slice(-3)].map((d) => String.fromCharCode(65 + Number(d))).join("")}`;
+  const number = `5${suffix.slice(-4)}`;
+  const ok = async (response: Promise<import("@playwright/test").APIResponse>) => {
+    const r = await response;
+    expect(r.ok(), await r.text()).toBe(true);
+    return r;
+  };
+  await ok(api.post("/api/v1/admin/stations", { data: { code, name: `Halt ${code}`, city: "Test" } }));
+  await ok(
+    api.post("/api/v1/admin/trains", {
+      data: { number, name: "Short Hop Passenger", running_days: [0, 1, 2, 3, 4, 5, 6] },
+    }),
+  );
+  await ok(
+    api.put(`/api/v1/admin/trains/${number}/route`, {
+      data: [
+        { station_code: "NDLS", departure: "10:00", day_offset: 0, distance_km: 0 },
+        { station_code: code, arrival: "12:00", day_offset: 0, distance_km: 120 },
+      ],
+    }),
+  );
+  await ok(
+    api.put(`/api/v1/admin/trains/${number}/coaches`, {
+      data: [{ code: "S1", travel_class: "SL", berth_count: berths }],
+    }),
+  );
+  await ok(
+    api.post("/api/v1/admin/runs/generate", {
+      data: { start: istDate(0), end: istDate(10), train_number: number },
+    }),
+  );
+  return { number, station: [code, `Halt ${code}`] as [string, string] };
 }
 
 export async function hasNoHorizontalScroll(page: Page): Promise<boolean> {

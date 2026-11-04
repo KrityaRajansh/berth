@@ -1,0 +1,50 @@
+@startmindmap features
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 12
+skinparam shadowing false
+<style>
+mindmapDiagram {
+  node {
+    BackgroundColor #F4F7FB
+    LineColor #4A4A4A
+    RoundCorner 6
+    Padding 6
+  }
+  rootNode {
+    BackgroundColor #0F2747
+    FontColor #FFFFFF
+  }
+  arrow {
+    LineColor #8A8A8A
+  }
+}
+</style>
+* Berth
+** Accounts (AUTH)
+*** Register, log in, profile
+*** Roles and rate-limited login
+** Search (SRCH)
+*** Station suggestions
+*** Trains between stations
+** Availability and fare (AVL)
+*** Segment-aware berths
+*** Fare breakdown with GST
+** Booking and payment (BKG, PAY)
+*** 1 to 6 passengers
+*** Berth allocation or waitlist
+*** Simulated gateway
+left side
+** Tickets (TKT)
+*** PNR and PDF e-ticket
+*** Public PNR status
+** Cancellation (CAN)
+*** Full or partial
+*** Rule-based refund
+** Waitlist and chart (WL)
+*** Automatic promotion
+*** Chart at 18:00 the day before
+** Administration (ADM)
+*** Stations, trains, routes
+*** Runs, chart, dashboard
+** Scheduled jobs (JOB)
+@endmindmap

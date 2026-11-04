@@ -1,20 +1,33 @@
+:root {
+  --navy: #0f2747;
+  --blue: #1f4e8c;
+  --tint: #eef4fb;
+  --ink: #1a1a1a;
+  --muted: #5a5a5a;
+  --rule: #d4dbe5;
+  --stripe: #f7f9fc;
+  --pass-bg: #e3f3e8;
+  --pass-ink: #1d6b3a;
+}
+
 @page {
   size: A4;
-  margin: 22mm 20mm 22mm 20mm;
+  margin: 20mm 18mm 20mm 18mm;
 
   @bottom-left {
     content: "__FOOTER_LEFT__";
-    font: 8.5pt "Segoe UI", Calibri, sans-serif;
-    color: #666;
+    font: 8pt "Segoe UI", Calibri, sans-serif;
+    color: #777;
   }
   @bottom-right {
-    content: "Page " counter(page) " of " counter(pages);
-    font: 8.5pt "Segoe UI", Calibri, sans-serif;
-    color: #666;
+    content: counter(page) " / " counter(pages);
+    font: 8pt "Segoe UI", Calibri, sans-serif;
+    color: #777;
   }
 }
 
 @page :first {
+  margin: 0;
   @bottom-left { content: none; }
   @bottom-right { content: none; }
 }
@@ -24,9 +37,11 @@
 }
 
 html {
-  font: 10.5pt/1.5 Cambria, Georgia, "Times New Roman", serif;
-  color: #1a1a1a;
+  font: 10pt/1.5 Cambria, Georgia, "Times New Roman", serif;
+  color: var(--ink);
   background: #fff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 
 body {
@@ -34,71 +49,103 @@ body {
 }
 
 h1, h2, h3, h4,
-th, .course, .facts, .toc, code {
+th, .course, .facts, .toc, .stats, figcaption, .part-divider, code, .product {
   font-family: "Segoe UI", Calibri, Arial, sans-serif;
 }
 
-/* Cover page */
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+/* Cover */
 
 .cover {
-  height: 250mm;
+  height: 297mm;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   page-break-after: always;
 }
 
+.cover-band {
+  background: var(--navy);
+  color: #fff;
+  padding: 46mm 22mm 18mm;
+  border-bottom: 3mm solid var(--blue);
+}
+
 .cover .course {
-  font-size: 11pt;
-  letter-spacing: 0.08em;
+  font-size: 9.5pt;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #555;
-  margin: 0 0 6mm;
+  color: #b9c9e0;
+  margin: 0 0 8mm;
 }
 
 .cover .doc-title {
-  font-size: 26pt;
+  font-size: 27pt;
   line-height: 1.15;
-  margin: 0 0 3mm;
+  margin: 0 0 4mm;
+  color: #fff;
   border: none;
   padding: 0;
 }
 
 .cover .doc-subtitle {
-  font-size: 14pt;
-  color: #333;
-  margin: 0 0 14mm;
+  font-family: "Segoe UI", Calibri, Arial, sans-serif;
+  font-size: 12pt;
+  line-height: 1.4;
+  color: #dce6f3;
+  margin: 0;
+  max-width: 150mm;
+}
+
+.cover .product {
+  margin: 12mm 0 0;
+  font-size: 11pt;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #8fb0dc;
+}
+
+.cover-body {
+  padding: 14mm 22mm;
+  flex: 1;
 }
 
 .cover .facts {
   display: grid;
-  grid-template-columns: 32mm 1fr;
-  row-gap: 1.5mm;
+  grid-template-columns: 34mm 1fr;
+  row-gap: 2mm;
   margin: 0 0 12mm;
-  font-size: 10.5pt;
+  font-size: 10pt;
 }
 
 .cover .facts dt {
-  color: #666;
+  color: var(--muted);
 }
 
 .cover .facts dd {
   margin: 0;
   font-weight: 600;
+  color: var(--navy);
 }
 
 .cover .members {
-  width: 120mm;
+  width: 125mm;
 }
 
-/* Table of contents */
+/* Contents */
 
 .toc {
   page-break-after: always;
 }
 
 .toc h2 {
-  margin-top: 0;
+  margin: 0 0 6mm;
+  font-size: 18pt;
+  color: var(--navy);
 }
 
 .toc ol {
@@ -108,32 +155,88 @@ th, .course, .facts, .toc, code {
 }
 
 .toc > ol > li {
-  margin-top: 2.5mm;
+  margin-top: 2.2mm;
   font-weight: 600;
+  color: var(--navy);
 }
 
 .toc ol ol {
   padding-left: 7mm;
   font-weight: 400;
+  color: var(--ink);
 }
 
 .toc a {
   color: inherit;
-  text-decoration: none;
+}
+
+.report-toc .toc {
+  font-size: 9pt;
+  line-height: 1.45;
+  column-count: 2;
+  column-gap: 10mm;
+}
+
+.report-toc .toc h2 {
+  column-span: all;
+}
+
+.report-toc .toc > ol > li {
+  break-inside: avoid-column;
+  margin-top: 4mm;
+}
+
+/* Part dividers in the combined report */
+
+.part-divider {
+  page-break-before: always;
+  page-break-after: always;
+  height: 240mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-left: 3mm solid var(--blue);
+  padding-left: 12mm;
+}
+
+.part-divider .part-no {
+  margin: 0;
+  font-size: 12pt;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+main .part-divider h1 {
+  font-size: 30pt;
+  line-height: 1.15;
+  margin: 3mm 0 4mm;
+  border: none;
+  padding: 0;
+  page-break-before: avoid;
+  color: var(--navy);
+}
+
+.part-divider .part-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10pt;
 }
 
 /* Body */
 
 main h1 {
   font-size: 17pt;
-  margin: 0 0 4mm;
-  padding-bottom: 1.5mm;
-  border-bottom: 1.5px solid #1a1a1a;
+  color: var(--navy);
+  margin: 0 0 5mm;
+  padding-bottom: 2mm;
+  border-bottom: 2px solid var(--blue);
   page-break-before: always;
 }
 
 main h2 {
   font-size: 12.5pt;
+  color: var(--blue);
   margin: 7mm 0 2.5mm;
 }
 
@@ -156,7 +259,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin: 2mm 0 5mm;
-  font: 9pt/1.4 "Segoe UI", Calibri, Arial, sans-serif;
+  font: 8.8pt/1.4 "Segoe UI", Calibri, Arial, sans-serif;
 }
 
 thead {
@@ -169,49 +272,65 @@ tr {
 }
 
 th, td {
-  border: 0.75px solid #b5b5b5;
-  padding: 1.6mm 2.2mm;
+  border-bottom: 0.75px solid var(--rule);
+  padding: 1.7mm 2.2mm;
   text-align: left;
   vertical-align: top;
 }
 
 th {
-  background: #eeeeee;
+  background: var(--tint);
+  color: var(--navy);
   font-weight: 600;
+  border-bottom: 1.5px solid var(--blue);
+}
+
+tbody tr:nth-child(even) td {
+  background: var(--stripe);
 }
 
 td:first-child {
   white-space: nowrap;
 }
 
-/* Test case tables: keep requirement IDs and status on one line */
-.tc table {
-  font-size: 8.5pt;
+/* Key/value tables written with an empty header row */
+table thead:has(th:first-child:empty):has(th:last-child:empty) {
+  display: none;
 }
 
-.tc td:nth-child(2),
-.tc td:last-child {
+/* Defect log: give the description and root cause room */
+.defects table {
+  font-size: 8.2pt;
+}
+
+.defects td:nth-child(2) {
+  width: 28%;
+}
+
+.defects td:nth-child(3),
+.defects td:nth-child(4) {
   white-space: nowrap;
 }
 
-.tc td:nth-child(2) {
-  font-size: 7.5pt;
+.defects td:nth-child(5) {
+  width: 40%;
 }
 
 code {
   font-family: Consolas, "Cascadia Mono", monospace;
-  font-size: 0.92em;
-  background: #f2f2f2;
+  font-size: 0.9em;
+  background: #f0f2f5;
   padding: 0 1mm;
   border-radius: 1mm;
   white-space: nowrap;
 }
 
 pre {
-  background: #f6f6f6;
-  border: 0.75px solid #ddd;
+  background: #f6f7f9;
+  border: 0.75px solid #dde1e6;
+  border-left: 2px solid var(--blue);
   padding: 3mm;
-  font-size: 8.5pt;
+  font-size: 8.3pt;
   overflow: hidden;
   white-space: pre-wrap;
 }
@@ -219,21 +338,134 @@ pre {
 pre code {
   background: none;
   padding: 0;
+  white-space: pre-wrap;
 }
 
 img {
   max-width: 100%;
-  max-height: 225mm;
+  max-height: 222mm;
 }
 
 figure {
-  margin: 4mm 0;
+  margin: 4mm 0 5mm;
   text-align: center;
   break-inside: avoid;
 }
 
 figcaption {
+  font-size: 8.5pt;
+  color: var(--muted);
+  margin-top: 2mm;
+}
+
+/* Test case tables: keep IDs, requirement refs and status on one line */
+
+.tc table {
+  font-size: 8.2pt;
+}
+
+.tc td:nth-child(2) {
+  font-size: 7.3pt;
+  color: var(--muted);
+}
+
+.tc.plan td:nth-child(2),
+.tc.result td:last-child {
+  white-space: nowrap;
+}
+
+.tc.result td:nth-child(2) {
+  font-size: 8.2pt;
+  color: var(--ink);
+}
+
+.pass {
+  display: inline-block;
+  padding: 0.2mm 2mm;
+  border-radius: 3mm;
+  background: var(--pass-bg);
+  color: var(--pass-ink);
+  font-weight: 600;
+  font-size: 7.8pt;
+}
+
+/* Summary tiles */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3mm;
+  margin: 2mm 0 6mm;
+}
+
+.stats > div {
+  border: 0.75px solid var(--rule);
+  border-top: 2px solid var(--blue);
+  padding: 3mm 3.5mm;
+  background: #fff;
+}
+
+.stats strong {
+  display: block;
+  font-size: 17pt;
+  color: var(--navy);
+  line-height: 1.2;
+}
+
+.stats span {
+  font-size: 8.5pt;
+  color: var(--muted);
+}
+
+/* Multi-column blocks */
+
+.cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8mm;
+}
+
+.cols3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5mm;
+}
+
+.cols3 table {
+  font-size: 7.8pt;
+  margin-bottom: 0;
+}
+
+.cols3 th,
+.cols3 td {
+  padding: 0.9mm 1.6mm;
+}
+
+.cols3 p {
+  margin: 0 0 1.5mm;
   font-size: 9pt;
-  color: #555;
-  margin-top: 1.5mm;
+}
+
+.cols3 td:first-child {
+  white-space: normal;
+}
+
+/* Screenshot evidence */
+
+.shots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5mm;
+}
+
+.shots figure {
+  margin: 0;
+}
+
+.shots img {
+  border: 0.75px solid var(--rule);
+  max-height: 95mm;
+  object-fit: cover;
+  object-position: top;
+  width: 100%;
 }

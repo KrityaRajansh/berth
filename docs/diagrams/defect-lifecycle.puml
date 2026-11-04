@@ -1,0 +1,15 @@
+@startuml defect-lifecycle
+!include _style.iuml
+skinparam linetype polyline
+hide empty description
+left to right direction
+
+[*] --> New : test fails
+New --> Assigned : triaged\n(severity, priority)
+Assigned --> Fixed : code change\ncommitted
+Fixed --> Retest
+Retest --> Closed : test passes and\nfull suite green
+Retest --> Reopened : still failing
+Reopened --> Assigned
+Closed --> [*]
+@enduml

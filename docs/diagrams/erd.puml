@@ -1,0 +1,128 @@
+@startuml erd
+!include _style.iuml
+skinparam linetype ortho
+hide circle
+hide methods
+skinparam class {
+  HeaderBackgroundColor #E9EEF5
+}
+
+entity "users" as users {
+  * id : uuid <<PK>>
+  --
+  * email : varchar(254) <<UK>>
+  * mobile : varchar(15) <<UK>>
+  * full_name : varchar(100)
+  * password_hash : varchar(100)
+  * role : PASSENGER | ADMIN
+}
+
+entity "station" as station {
+  * id : int <<PK>>
+  --
+  * code : varchar(8) <<UK>>
+  * name : varchar(80)
+  * city : varchar(80)
+}
+
+entity "train" as train {
+  * id : int <<PK>>
+  --
+  * number : varchar(5) <<UK>>
+  * name : varchar(80)
+  * running_days : smallint
+}
+
+entity "route_stop" as route_stop {
+  * id : int <<PK>>
+  --
+  * train_id : int <<FK>>
+  * station_id : int <<FK>>
+  * seq : smallint
+  arrival / departure : time
+  * day_offset, distance_km : int
+}
+
+entity "coach" as coach {
+  * id : int <<PK>>
+  --
+  * train_id : int <<FK>>
+  * code : varchar(4)
+  * travel_class : SL | 3A | 2A | 1A
+  * berth_count : smallint
+}
+
+entity "train_run" as train_run {
+  * id : int <<PK>>
+  --
+  * train_id : int <<FK>>
+  * run_date : date
+  * status : SCHEDULED | CHART_PREPARED | ...
+}
+
+entity "train_run_class" as run_class {
+  * id : int <<PK>>
+  --
+  * run_id : int <<FK>>
+  * travel_class
+  * berth_capacity, waitlist_limit : int
+  * coaches : jsonb
+}
+
+entity "booking" as booking {
+  * id : uuid <<PK>>
+  --
+  pnr : varchar(10) <<UK>>
+  * user_id : uuid <<FK>>
+  * run_id, run_class_id : int <<FK>>
+  * from_station_id, to_station_id : int <<FK>>
+  * from_seq, to_seq : smallint
+  * status : PENDING_PAYMENT | BOOKED | ...
+  * total_fare_paise : int
+  * expires_at : timestamptz
+}
+
+entity "passenger" as passenger {
+  * id : int <<PK>>
+  --
+  * booking_id : uuid <<FK>>
+  * run_class_id : int <<FK>>
+  * name, age, gender
+  status : CNF | WL | CAN
+  coach_code, berth_no, berth_type
+  wl_seq : int
+  * fare_paise, refund_paise : int
+  ..
+  EXCLUDE berth overlap (gist)
+}
+
+entity "payment" as payment {
+  * id : uuid <<PK>>
+  --
+  * booking_id : uuid <<FK>>
+  * amount_paise : int
+  * status : SUCCESS | FAILED
+  gateway_ref : varchar(40)
+}
+
+entity "refund" as refund {
+  * id : uuid <<PK>>
+  --
+  * booking_id : uuid <<FK>>
+  * payment_id : uuid <<FK>>
+  * amount_paise : int
+  * reason
+}
+
+train ||--|{ route_stop
+station ||--o{ route_stop
+train ||--|{ coach
+train ||--o{ train_run
+train_run ||--|{ run_class
+users ||--o{ booking
+train_run ||--o{ booking
+run_class ||--o{ booking
+booking ||--|{ passenger
+booking ||--o{ payment
+payment ||--o{ refund
+@enduml

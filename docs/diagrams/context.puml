@@ -1,0 +1,22 @@
+@startuml context
+!include _style.iuml
+skinparam linetype polyline
+left to right direction
+
+actor "Guest" as guest
+actor "Passenger" as passenger
+actor "Administrator" as admin
+
+rectangle "Berth\nOnline Train Ticket\nReservation System" as berth #E9EEF5
+
+node "Payment gateway\n(mock)" as gateway
+node "Scheduler\n(daily cron)" as cron
+database "PostgreSQL" as db
+
+guest --> berth : search trains,\ncheck PNR, register
+passenger --> berth : book, pay, cancel,\ndownload e-ticket
+admin --> berth : manage stations, trains,\nruns, view charts
+berth --> gateway : charge / refund
+cron --> berth : chart preparation,\nnightly jobs
+berth --> db : reads and writes
+@enduml
